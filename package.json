@@ -1,5 +1,5 @@
 {
-  "name": "y",
+  "name": "Education",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "Seckals <530926056@qq.com>",
@@ -10,6 +10,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.17.1",
+    "element-ui": "^2.0.8",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
