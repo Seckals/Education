@@ -1,9 +1,11 @@
 module.exports = {
   proxyList: {
-    '/account': {
+    '/api': {
       target: 'http://www.eduvenus.com/',
       changeOrigin: true,
-      pathRewrite: {'^/account': '' }
+      pathRewrite: {
+        '^/api': ''
+      }
     }
   }
 }

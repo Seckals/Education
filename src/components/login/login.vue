@@ -40,7 +40,7 @@ export default {
   methods: {
       submit(){
           this.fullscreenLoading = true
-          this.axios.post('/account/Login',{'username':this.username,'password':this.password}).then(response => {
+          this.axios.post('/api/account/Login',{'username':this.username,'password':this.password}).then(response => {
               var res = response.data
               if (res == 1) {
                   // 跳入老师主页
