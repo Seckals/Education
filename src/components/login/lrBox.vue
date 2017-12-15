@@ -1,30 +1,8 @@
 <template lang="html">
     <div id="lrBox">
-        <login v-if="isShow" @register='register'></login>
-        <register v-if="!isShow"></register>
+        <router-view/>
     </div>
 </template>
-
-<script>
-import login from './login'
-import register from './register'
-export default {
-    data(){
-        return {
-            isShow:true
-        }
-    },
-    components:{
-        login,
-        register
-    },
-    methods:{
-        register(msg){
-            this.isShow = msg
-        }
-    }
-}
-</script>
 
 <style lang="css">
 #lrBox{

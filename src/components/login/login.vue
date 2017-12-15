@@ -13,7 +13,7 @@
                 </div>
                 <div class="btn login" @click="submit">登陆</div>
                 <div class="footer">
-                    <a @click='register'>免费注册</a>
+                    <router-link :to="{ path: 'register', query: {type:'teacher'} }">免费注册</router-link>
                     <span>|</span>
                     <a>忘记密码</a>
                 </div>
@@ -38,9 +38,6 @@ export default {
     }
   },
   methods: {
-      register(){
-          this.$emit('register',false)
-      },
       submit(){
           this.fullscreenLoading = true
           this.axios.post('/account/Login',{'username':this.username,'password':this.password}).then(response => {
