@@ -1,19 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// 登陆，注册
 import lrBox from '../components/login/lrBox'
 import login from '../components/login/login'
 import register from '../components/login/register'
-import verificPhone from '../components/login/verificPhone'
-import registerStudent from '../components/login/registerStudent'
-import registerClass from '../components/login/registerClass'
-import registerTeacher from '../components/login/registerTeacher'
+import verificPhone from '../components/login/register/verificPhone'
+import registerStudent from '../components/login/register/registerStudent'
+import registerClass from '../components/login/register/registerClass'
+import registerTeacher from '../components/login/register/registerTeacher'
+// 教师部分
+import teacher from '../components/teacher/index'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [{
-      path: '/',
-      name: 'lrBox',
+      path: '/lrBox',
       component: lrBox,
       children: [{
           path: 'login',
@@ -49,6 +51,14 @@ export default new Router({
           redirect: 'login'
         }
       ]
+    },
+    {
+        path: '/teacher',
+        component: teacher
+    },
+    {
+        path:'/',
+        redirect: '/lrBox'
     }
   ]
 })

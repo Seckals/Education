@@ -18,6 +18,9 @@ export default {
 .cGreen{
     color: #4ebbbc !important;
 }
+.cursor{
+    cursor: pointer;
+}
 .btn{
     text-align: center;
     color: #fff;

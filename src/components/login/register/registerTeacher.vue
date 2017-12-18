@@ -6,7 +6,7 @@
             <input type="text" placeholder="请输入工号" v-model='jobNumber'>
         </div>
         <div class="input line">
-            <i class="iconfont icon-mima"></i>
+            <i class="iconfont icon-suo1"></i>
             <input type="text" placeholder="请输入密码" v-model='password'>
         </div>
         <div class="btn next" @click='submitTeacher'>提交</div>
@@ -39,24 +39,19 @@ export default {
         },
         submit(info){
             this.fullscreenLoading = true
-            this.axios.post('/account/Login',info).then(response => {
+            this.axios.post('/account/Register',info).then(response => {
                 var res = response.data
-                if (res == 1) {
-                    // 跳入老师主页
-                    this.$message.success("登录老师页面成功")
-  			  }else if(res == 2){
-                    // 跳入学生主页
-                    this.$messag.success("登录学生页面成功")
-  			  }else if(res == 40000){
+                this.fullscreenLoading = false
+                if (res.data == 'success') {
+                    this.$router.push('/login')
+      			}else{
                     this.$message.warning("对不起，用户名或密码错误")
-  			  }
+      			}
             }).catch(error => {
+                this.fullscreenLoading = false
                 this.$message.error(error)
             })
         }
     }
 }
 </script>
-
-<style lang="css">
-</style>

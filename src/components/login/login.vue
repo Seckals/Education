@@ -8,7 +8,7 @@
                     <input type="text" placeholder="请输入手机号码" v-model="username">
                 </div>
                 <div class="item">
-                    <i class="iconfont icon-mima"></i>
+                    <i class="iconfont icon-suo1"></i>
                     <input type="password" placeholder="请输入密码" v-model="password">
                 </div>
                 <div class="btn login" @click="submit">登陆</div>
@@ -42,6 +42,7 @@ export default {
           this.fullscreenLoading = true
           this.axios.post('/api/account/Login',{'username':this.username,'password':this.password}).then(response => {
               var res = response.data
+              this.fullscreenLoading = false
               if (res == 1) {
                   // 跳入老师主页
                   this.$message.success("登录老师页面成功")
@@ -52,6 +53,7 @@ export default {
                   this.$message.warning("对不起，用户名或密码错误")
 			  }
           }).catch(error => {
+              this.fullscreenLoading = false
               this.$message.error(error)
           })
       }

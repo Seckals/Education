@@ -6,13 +6,19 @@
             <input type="text" placeholder="请输入班主任手机号" v-model='teacherPhone'>
             <i class="iconfont icon-youjiantou go" @click='getClassList'></i>
         </div>
-        <div class="classInfo" v-show="listIsShow">
-            <div class="title">请选择班级</div>
-            <ul class="list">
-                <li v-for='(item,index) in classList' :class="{cGreen:index==isChoose}" @click='clickThis(index,item)'>{{item}}</li>
-            </ul>
-            <div class="btn next" @click='next'>下一步</div>
+        <div class="classBox" v-if="isClassShow">
+            <div class="classInfo" v-show="listIsShow">
+                <div class="title">请选择班级</div>
+                <ul class="list">
+                    <li v-for='(item,index) in classList' :class="{cGreen:index==isChoose}" @click='clickThis(index,item)'>{{item}}</li>
+                </ul>
+            </div>
+            <div class="noClass" v-show="!listIsShow">
+                没有该老师的班级信息
+            </div>
         </div>
+
+        <div class="btn next" @click='next'>下一步</div>
     </div>
 </template>
 
@@ -24,24 +30,31 @@ export default {
             listIsShow:true,
             classList:[],
             isChoose:'',
-            classId:''
+            classId:'',
+            isClassShow:false
         }
     },
     methods:{
         getClassList(){
+            if(this.teacherPhone !== ''){
+                this.subPost(this.teacherPhone)
+            }else{
+                this.$message.error("请输入教师手机号")
+            }
+        },
+        subPost(val){
             this.fullscreenLoading = true
-            this.axios.post('/account/Login',{'username':this.username,'password':this.password}).then(response => {
+            this.axios.get('/api/getClassInfo/'+val).then(response => {
+                this.fullscreenLoading = false
                 var res = response.data
-                if (res == 1) {
-                    // 跳入老师主页
-                    this.$message.success("登录老师页面成功")
-  			  }else if(res == 2){
-                    // 跳入学生主页
-                    this.$messag.success("登录学生页面成功")
-  			  }else if(res == 40000){
-                    this.$message.warning("对不起，用户名或密码错误")
-  			  }
+                this.isClassShow = true
+                if (res.list.length > 0) {
+                    this.classList = res.list
+      			}else{
+                    this.listIsShow = false
+      			}
             }).catch(error => {
+                this.fullscreenLoading = false
                 this.$message.error(error)
             })
         },
@@ -50,7 +63,9 @@ export default {
             this.classId = info
         },
         next(){
-            if(classId == ''){
+            if(this.teacherPhone == ''){
+                this.$message.error("请输入教师手机号")
+            }else if(this.classId == ''){
                 this.$message.error("请选择班级")
             }else{
                 var info = {
@@ -101,5 +116,13 @@ export default {
     border: 2px dashed;
     color: #909594;
     cursor: pointer;
+}
+.noClass{
+    padding-top: 24px;
+    width: 100%;
+    line-height: 44px;
+    font-size: 14.6px;
+    color:#5d615e;
+    text-align: left;
 }
 </style>

@@ -7,7 +7,7 @@
         </div>
         <div class="codeBox">
             <div class="code line">
-                <i class="iconfont icon-anquandunpai"></i>
+                <i class="iconfont icon-zhanghaoanquan"></i>
                 <input type="text" placeholder="请输入验证码" v-model='code'>
             </div>
             <div class="btn getCode" @click='getCode' v-show='isCodeShow'>获取验证码</div>
@@ -52,7 +52,7 @@ export default {
                 if(this.$route.query.type == 'teacher'){
                     this.$router.push({path:'registerTeacher',query:{telphone:this.telphone}})
                 }else if(this.$route.query.type == 'student'){
-                    this.$router.push({path:'registerStudent',query:{telphone:this.telphone}})
+                    this.$router.push({path:'registerClass',query:{telphone:this.telphone}})
                 }
             }
         }
