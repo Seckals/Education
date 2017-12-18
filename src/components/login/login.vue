@@ -8,10 +8,10 @@
                     <input type="text" placeholder="请输入手机号码" v-model="username">
                 </div>
                 <div class="item">
-                    <i class="iconfont icon-suo1"></i>
+                    <i class="iconfont icon-mima"></i>
                     <input type="password" placeholder="请输入密码" v-model="password">
                 </div>
-                <div class="btn login" @click="submit">登陆</div>
+                <div class="btn login" @click="submit" v-loading.fullscreen.lock="fullscreenLoading">登陆</div>
                 <div class="footer">
                     <router-link :to="{ path: 'register', query: {type:'teacher'} }">免费注册</router-link>
                     <span>|</span>
@@ -34,21 +34,20 @@ export default {
   data() {
     return {
         username:'',
-        password:''
+        password:'',
+        fullscreenLoading:false
     }
   },
   methods: {
       submit(){
           this.fullscreenLoading = true
-          this.axios.post('/api/account/Login',{'username':this.username,'password':this.password}).then(response => {
+          this.axios.post('/account/Login',this.qs.stringify({'username':this.username,'password':this.password})).then(response => {
               var res = response.data
               this.fullscreenLoading = false
               if (res == 1) {
-                  // 跳入老师主页
-                  this.$message.success("登录老师页面成功")
+                  this.$router.push('/teacher')
 			  }else if(res == 2){
-                  // 跳入学生主页
-                  this.$messag.success("登录学生页面成功")
+                  this.$router.push('/student')
 			  }else if(res == 40000){
                   this.$message.warning("对不起，用户名或密码错误")
 			  }
@@ -61,7 +60,7 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style>
 #login>.content{
     width: 410px;
     height: 470px;

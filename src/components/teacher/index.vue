@@ -2,21 +2,63 @@
     <div id="teacher">
         <header>
             <div class="headerInfo">
-                <div class="fl">
+                <div class="fl flLogo">
                     <img src="./img/qiStar.png">
                     <img src="./img/plan1.png">
                 </div>
-                <div class="fr">
+                <div class="fr fAccount">
                     <div class="accountInfo">
-                        <i class="iconfont icon-mima"></i>
-                        <span>18700462194</span>
-                        <i class="iconfont icon-mima cursor" @click='showOut'></i>
-                        <i class="iconfont icon-mima down" v-show='isOutShow' @click="getOut">退出</i>
+                            <i class="iconfont icon-zhanghao"></i>
+                            <span class='account'>18700462194</span>
+                            <el-dropdown @command="getOut">
+                                <span class="el-dropdown-link cursor">
+                                    <i class="el-icon-caret-bottom el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item class="down"><i class="iconfont icon-tuichu outIcon"></i><span>退出</span></el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
                     </div>
                     <img src="./img/plan.png">
                 </div>
             </div>
         </header>
+        <div class="indexContent clearfix">
+            <ul class="fl nav">
+                <li>
+                    <div class="navLogo">
+                        <img src="./img/logo_pic.png" alt="">
+                    </div>
+                    <span class="navAccount">18700462194</span>
+                    <el-dropdown @command="getOut">
+                        <span class="el-dropdown-link cursor">
+                            <i class="el-icon-caret-bottom el-icon--right"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item class="down"><i class="iconfont icon-tuichu outIcon"></i><span>退出</span></el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </li>
+                <li class="m49">
+                    <img src="./img/line_left.png" alt="">
+                </li>
+                <li>
+                    <router-link to="/teacher/list" class="homework" :class="{homeworkActive:type==1}" @click.native='change(1)'><span></span></router-link>
+                </li>
+                <li><img src="./img/line_left.png" alt=""></li>
+                <li>
+                    <router-link :to="{ name: '', params: {} }" class="publish" :class="{publishActive:type==2}" @click.native='change(2)'><span></span></router-link>
+                </li>
+                <li><img src="./img/line_left.png" alt=""></li>
+                <li>
+                    <router-link :to="{ name: '', params: {} }" class="library" :class="{libraryActive:type==3}" @click.native='change(3)'><span></span></router-link>
+                </li>
+                <li><img src="./img/line_left.png" alt=""></li>
+            </ul>
+            <div class="fr">
+                <router-view/>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -24,15 +66,15 @@
 export default {
     data(){
         return {
-            isOutShow:false
+            type:1
         }
     },
     methods:{
-        showOut(){
-            this.isOutShow = !this.isOutShow
-        },
         getOut(){
 
+        },
+        change(val){
+            this.type = val
         }
     }
 }
@@ -58,35 +100,52 @@ export default {
     height: 100%;
     margin:0 auto;
 }
-#teacher>header>.headerInfo>.fl,#teacher>header>.headerInfo>.fr{
+#teacher>header>.headerInfo>.flLogo,#teacher>header>.headerInfo>.fAccount{
     font-size: 0;
     height: 100%;
     line-height: 67px;
 }
-#teacher>header>.headerInfo>.fl>img,#teacher>header>.headerInfo>.fr>img{
+#teacher>header>.headerInfo>.flLogo>img,#teacher>header>.headerInfo>.fAccount>img{
     vertical-align: middle;
 }
-#teacher>header>.headerInfo>.fl>img{
+#teacher>header>.headerInfo>.flLogo>img{
     margin-right: 45px;
 }
-#teacher>header>.headerInfo>.fr>img{
+#teacher>header>.headerInfo>.flLogo>img{
     margin-top: -18px;
 }
-#teacher>header>.headerInfo>.fl{
+.fl{
     float: left;
 }
-#teacher>header>.headerInfo>.fr{
+.fr{
     float: right;
 }
-#teacher>header>.headerInfo>.fr>.accountInfo{
-    font-size:17.3px;
+#teacher>header>.headerInfo>.fAccount>.accountInfo{
+    font-size:0;
     color: #b2b3b3;
     display: inline-block;
-    margin-right: 18px;
+    margin-right: 38px;
     position: relative;
     font-weight: bold;
+    box-sizing: border-box;
+    height: 100%;
+    vertical-align: top;
 }
-#teacher>header>.headerInfo>.fr>.accountInfo>.down{
+#teacher>header>.headerInfo>.fAccount>.accountInfo .icon-zhanghao{
+    font-size:23px;
+}
+#teacher>header>.headerInfo>.fAccount>.accountInfo .icon-f11-copy{
+    font-size:20px;
+    position: absolute;
+    top: 2px;
+}
+#teacher>header>.headerInfo>.fAccount>.accountInfo span{
+    font-size:17px;
+}
+#teacher>header>.headerInfo>.fAccount>.accountInfo>.account{
+    margin-left:8px;
+}
+#teacher>header>.headerInfo>.fAccount>.accountInfo .down{
     position: absolute;
     top:67px;
     right: 0;
@@ -94,14 +153,84 @@ export default {
     height: 49px;
     border: 1px solid #ced9d3;
     text-align: center;
-    vertical-align: middle;
-    line-height: 49px;
-    font-size: 16px;
+    font-size: 0;
     cursor: pointer;
     color: #000;
     background: #fff;
 }
-#teacher>header>.headerInfo>.fr>.accountInfo>.down:before{
-    margin-right: 13px;
+#teacher>header>.headerInfo>.fAccount>.accountInfo .down>span{
+    font-size:16px;
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    line-height: 49px;
+}
+#teacher>header>.headerInfo>.fAccount>.accountInfo>.el-dropdown {
+    height: 40px;
+}
+.el-dropdown-menu{
+    padding: 0 !important;
+}
+/* content */
+#teacher>.indexContent{
+    width: 1024px;
+    margin: 0 auto;
+}
+#teacher>.indexContent>.nav{
+    width: 80px;
+}
+#teacher>.indexContent>.nav>li{
+    width: 100%;
+    font-size:0;
+    text-align: center;
+    padding: 12px 0;
+}
+#teacher>.indexContent>.nav>li>.navLogo{
+    width: 100%;
+    text-align: center;
+    margin-top: 52px;
+    margin-bottom: 5px;
+}
+#teacher>.indexContent>.nav>li>.navAccount{
+    font-size:12pt;
+    font-weight: bold;
+    display: inline-block;
+    width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+#teacher>.indexContent>.nav>li>.el-dropdown{
+    vertical-align: top;
+}
+#teacher>.indexContent>.nav>li>a>span{
+    display: block;
+    width:70px;
+    margin:0 auto;
+    background: url('./img/icon.png') no-repeat;
+}
+#teacher>.indexContent>.nav>li>.homework>span{
+    height: 61px;
+}
+#teacher>.indexContent>.nav>li>.publish>span{
+    height: 68px;
+    background-position:0 -61px;
+}
+#teacher>.indexContent>.nav>li>.library>span{
+    height: 64px;
+    width:72px;
+    background-position: 0 -127px;
+}
+.homeworkActive>span{
+    background-position:-76px 0 !important;
+}
+.publishActive>span{
+    background-position:-74px -61px !important;
+}
+.libraryActive>span{
+    background-position:-73px -127px !important;
+}
+.m49{
+    margin-top: 49px;
 }
 </style>

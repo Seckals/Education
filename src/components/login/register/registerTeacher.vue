@@ -6,7 +6,7 @@
             <input type="text" placeholder="请输入工号" v-model='jobNumber'>
         </div>
         <div class="input line">
-            <i class="iconfont icon-suo1"></i>
+            <i class="iconfont icon-mima"></i>
             <input type="text" placeholder="请输入密码" v-model='password'>
         </div>
         <div class="btn next" @click='submitTeacher'>提交</div>

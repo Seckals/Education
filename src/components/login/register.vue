@@ -2,18 +2,16 @@
     <div id="register">
         <img src="./img/register_logo.png">
         <div class="part">
-            <router-link :to="{ path: 'verify', query: {type:'teacher'} }" tag='div' class="partItem" @click.native='chengeIcon'>
+            <router-link :to="{ path: 'verify', query: {type:'teacher'} }" tag='div' class="partItem" @click.native="chengeIcon('teacher')">
                 <div class="portrait" :class="{tChoose:isChoose,tNChoose:!isChoose}"></div>
     			<p>我是老师</p>
             </router-link>
-            <router-link :to="{ path: 'verify', query: {type:'student'} }" tag='div' class="partItem" @click.native='chengeIcon'>
+            <router-link :to="{ path: 'verify', query: {type:'student'} }" tag='div' class="partItem" @click.native="chengeIcon('student')">
                 <div class="portrait" :class="{sChoose:!isChoose,sNChoose:isChoose}"></div>
     			<p>我是学生</p>
             </router-link>
     	</div>
-        <div class="registerInfo">
-            <router-view/>
-        </div>
+        <router-view/>
     </div>
 </template>
 
@@ -25,14 +23,18 @@ export default {
         }
     },
     methods:{
-        chengeIcon(){
-            this.isChoose = !this.isChoose
+        chengeIcon(val){
+            if(val == 'teacher'){
+                this.isChoose = true
+            }else if(val == 'student'){
+                this.isChoose = false
+            }
         }
     }
 }
 </script>
 
-<style lang="css">
+<style>
 #register{
     width: 360px;
     min-height: 470px;

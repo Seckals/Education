@@ -10,7 +10,7 @@
             <div class="classInfo" v-show="listIsShow">
                 <div class="title">请选择班级</div>
                 <ul class="list">
-                    <li v-for='(item,index) in classList' :class="{cGreen:index==isChoose}" @click='clickThis(index,item)'>{{item}}</li>
+                    <li v-for='(item,index) in classList' :class="{cGreen:index==isChoose}" @click='clickThis(index,item)'>{{item.gradeChar}}{{item.classChar}}</li>
                 </ul>
             </div>
             <div class="noClass" v-show="!listIsShow">
@@ -29,7 +29,7 @@ export default {
             teacherPhone:'',
             listIsShow:true,
             classList:[],
-            isChoose:'',
+            isChoose:-1,
             classId:'',
             isClassShow:false
         }
@@ -72,14 +72,14 @@ export default {
                     phone: this.$route.query.telphone,
                     classId:this.classId
                 }
-                this.$route.push({path:'registerStudent',query:info})
+                this.$router.push({path:'registerStudent',query:info})
             }
         }
     }
 }
 </script>
 
-<style lang="css">
+<style>
 /* 输入框 */
 
 .input>.go{
@@ -89,10 +89,10 @@ export default {
     color:#4ebbbc;
 }
 
-.getStudentClass>.classInfo{
+.getStudentClass .classInfo{
     padding-top: 24px;
 }
-.getStudentClass>.classInfo>.title{
+.getStudentClass .classInfo>.title{
     width: 100%;
     line-height: 44px;
     border-bottom: 1px solid #aec0c3;

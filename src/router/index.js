@@ -10,21 +10,28 @@ import registerClass from '../components/login/register/registerClass'
 import registerTeacher from '../components/login/register/registerTeacher'
 // 教师部分
 import teacher from '../components/teacher/index'
+import list from '../components/teacher/list/list'
+import info from '../components/teacher/list/info'
+// 学生部分
+import student from '../components/student/index'
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [{
+  routes: [
+      {
       path: '/lrBox',
       component: lrBox,
-      children: [{
+      children: [
+        {
           path: 'login',
           component: login
         },
         {
           path: 'register',
           component: register,
-          children: [{
+          children: [
+            {
               path: "verify",
               component: verificPhone
             },
@@ -54,7 +61,25 @@ export default new Router({
     },
     {
         path: '/teacher',
-        component: teacher
+        component: teacher,
+        children:[
+            {
+                path: 'list',
+                component: list
+            },
+            {
+                path: 'info',
+                component: info
+            },
+            {
+                path:'/',
+                redirect: 'list'
+            }
+        ]
+    },
+    {
+        path: '/student',
+        component: student
     },
     {
         path:'/',

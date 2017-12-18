@@ -6,9 +6,14 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import qs from 'qs'
+var instance = axios.create({
+    baseURL: '/api/'
+})
 
 Vue.use(ElementUI)
-Vue.prototype.axios = axios
+Vue.prototype.qs = qs
+Vue.prototype.axios = instance
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

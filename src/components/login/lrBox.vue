@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<style lang="css">
+<style>
 #lrBox{
     width: 100%;
     height: 100%;

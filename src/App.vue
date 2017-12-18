@@ -52,4 +52,7 @@ export default {
 	color:#8a918c !important;
 	font-size:15px;
 }
+.el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover {
+    color: #28b3b4 !important;
+}
 </style>

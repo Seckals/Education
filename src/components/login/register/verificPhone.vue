@@ -7,7 +7,7 @@
         </div>
         <div class="codeBox">
             <div class="code line">
-                <i class="iconfont icon-zhanghaoanquan"></i>
+                <i class="iconfont icon-anquandunpai"></i>
                 <input type="text" placeholder="请输入验证码" v-model='code'>
             </div>
             <div class="btn getCode" @click='getCode' v-show='isCodeShow'>获取验证码</div>
@@ -60,7 +60,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style>
 /* 输入框 */
 .input{
     margin-top: 27px;
