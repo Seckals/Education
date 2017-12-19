@@ -1,56 +1,56 @@
 <template>
-    <div class="list">
+    <div class="list"  v-loading.fullscreen.lock="fullscreenLoading">
         <header>
-            <div class="classes">
+            <div class="classes" @blur="isblur" tabindex="1">
                 <span class="searchTitle cursor" @click="showList('classes')" :class='{titleActive:isClassRotate}'>
-                    全部<i class="el-icon-arrow-down rotate" :class="{rotate180:isClassRotate,rotate0:!isClassRotate}"></i>
+                    {{className}}<i class="el-icon-arrow-down rotate" :class="{rotate180:isClassRotate,rotate0:!isClassRotate}"></i>
                 </span>
                 <ul v-show='isClassRotate'>
-                    <li>12313</li>
+                    <li v-for="item in classList" @click="changeStatus('classes',item.id,item.gradeChar+item.classChar)">{{item.gradeChar}}{{item.classChar}}</li>
                 </ul>
             </div>
-            <div class="status">
+            <div class="status" @blur="isblur" tabindex="1">
                 <span class="searchTitle cursor" @click="showList('status')" :class='{titleActive:isStatusRotate}'>
-                    全部<i class="el-icon-arrow-down rotate" :class="{rotate180:isStatusRotate}"></i>
+                    {{statusStr}}<i class="el-icon-arrow-down rotate" :class="{rotate180:isStatusRotate}"></i>
                 </span>
                 <ul v-show='isStatusRotate'>
-                    <li>12313</li>
+                    <li @click="changeStatus('status',0,'全部')">全部</li>
+                    <li @click="changeStatus('status',2,'待检查')">待检查</li>
+                    <li @click="changeStatus('status',1,'已检查')">已检查</li>
                 </ul>
             </div>
-
         </header>
         <section>
             <ul class="listBox">
-                <li class="listItem">
+                <li class="listItem" v-for="(item,index) in homeworkList">
                     <div class="time">
-                        <span class="className">三年级三班</span>
-                        <span class="day">昨天</span>
-                        <span class="week">星期日</span>
-                        <span class="date">19:50</span>
+                        <span class="className">{{item.education_Grade_And_Class.gradeChar}}{{item.education_Grade_And_Class.classChar}}</span>
+                        <span class="day">{{item.createTime | dealTime}}</span>
+                        <span class="week">{{item.week}}</span>
+                        <span class="date">{{item.createTime | getHours}}</span>
                     </div>
                     <div class="listItemContant">
                         <div class="unit">
                             <span class="w250">
-                                单元: 一单元
+                                单元: {{item.homework_Job_Father.element}}
                             </span>
-                            <span class="itemStatus"><i class="iconfont icon-dian-copy-copy"></i>待检查</span>
+                            <span class="itemStatus"><i class="iconfont icon-dian-copy-copy"></i>{{item.check | changeStatus}}</span>
                             <span class="finishPeople">
-                                <span>0</span>/1人
+                                <span>{{item.finishPeople}}</span>/{{item.education_Grade_And_Class.peopleNumber}}人
                             </span>
                         </div>
                         <div class="itemInfo clearfix">
-                            <span class="w370">内容: 古诗词</span>
+                            <span class="w370">内容: {{item.homework_Job_Father.jobName}}</span>
                             <span class="c28b3b4 f14">已完成</span>
-                            <button class="fr">查看</button>
+                            <button class="fr" @click="showInfo(item)">查看</button>
                         </div>
                         <div class="dataTime">
-                            <span>日期: 12月17日<span>17:55</span>-12月19日<span>23:59</span></span>
+                            <span>日期: {{item.startTime| getMDHM}}-{{item.endTime| getMDHM}}</span>
                         </div>
                     </div>
                     <img src="./img/fenge.png" alt="">
                 </li>
             </ul>
-
         </section>
         <footer>
 
@@ -59,11 +59,58 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
     data(){
         return {
             isClassRotate:false,
-            isStatusRotate:false
+            isStatusRotate:false,
+            fullscreenLoading:false,
+            status:'',
+            classId:'',
+            statusStr:'全部',
+            className:'全部',
+            homeworkList:[],
+            classList:[]
+        }
+    },
+    mounted(){
+        this.getClassList()
+        this.getHomeworkList(0,'Null')
+    },
+    filters:{
+        dealTime:function(val) {
+            var date = new Date(val)
+            var date1 = new Date()
+            var year = date.getFullYear()
+            var year1 = date1.getFullYear()
+            var month = date.getMonth() + 1
+            var month1 = date1.getMonth() + 1
+            var day =date1.getDate() - date.getDate()
+            if(year != year1 || month != month1 || day>2){
+                return val
+            }else {
+                if(day = 2){
+                    return '前天'
+                }else if(day = 1){
+                    return '昨天'
+                }else if(day = 0){
+                    return '今天'
+                }
+            }
+        },
+        getHours:function(val){
+            var date = new Date(val)
+            return date.getHours() + ":" +date.getMinutes()
+        },
+        getMDHM:function(val){
+            var date = new Date(val)
+            return date.getMonth() + 1 + "月" + date.getDate() + "日" + date.getHours() + ":" + date.getMinutes()
+        },
+        changeStatus:function(val){
+            var word = ['','已检查','待检查']
+            return word[val]
         }
     },
     methods:{
@@ -75,6 +122,53 @@ export default {
                 this.isStatusRotate = !this.isStatusRotate
                 this.isClassRotate = false
             }
+        },
+        changeStatus(type,val,str){
+            if(type == 'status'){
+                this.status = val
+                this.statusStr = str
+            }else if(type == 'classes'){
+                this.className = str
+                this.classId = val
+            }
+            this.isblur()
+            this.getHomeworkList(this.status,this.classId)
+        },
+        isblur(){
+            this.isClassRotate = false
+            this.isStatusRotate = false
+        },
+        showInfo(item){
+            this.$router.push({path:'info',query:item})
+        },
+        getClassList(){
+            this.fullscreenLoading = true
+            var teacherId = this.Util.getCookie('u_id')
+            var subjectId = this.Util.getCookie('s_id')
+            this.axios.get('/homework/CSM/'+teacherId+"/"+subjectId).then(response => {
+                var resp = response.data
+                this.fullscreenLoading = false
+                if(resp.list){
+                    this.classList = resp.list
+                }
+            }).catch(error => {
+                this.fullscreenLoading = false
+                this.$message.error(error)
+            })
+        },
+        getHomeworkList(state,classId){
+            this.fullscreenLoading = true
+            var teacherId = this.Util.getCookie('u_id')
+            this.axios.get('/homework/findPublishDetail/1/'+teacherId+"/"+state+"/"+classId).then(response => {
+                var resp = response.data
+                this.fullscreenLoading = false
+                if(resp.list){
+                    this.homeworkList = resp.list
+                }
+            }).catch(error => {
+                this.fullscreenLoading = false
+                this.$message.error(error)
+            })
         }
     }
 }
@@ -110,6 +204,12 @@ export default {
 }
 .list>header>.status{
     right: 47px;
+}
+.list>header>.status li,.list>header>.classes li{
+    cursor: pointer;
+}
+.list>header>.status li:hover,.list>header>.classes li:hover{
+    background: #e8efeb;
 }
 .list>header .searchTitle{
     display: block;

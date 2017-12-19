@@ -9,7 +9,7 @@
                 <div class="fr fAccount">
                     <div class="accountInfo">
                             <i class="iconfont icon-zhanghao"></i>
-                            <span class='account'>18700462194</span>
+                            <span class='account'>{{username}}</span>
                             <el-dropdown @command="getOut">
                                 <span class="el-dropdown-link cursor">
                                     <i class="el-icon-caret-bottom el-icon--right"></i>
@@ -29,7 +29,7 @@
                     <div class="navLogo">
                         <img src="./img/logo_pic.png" alt="">
                     </div>
-                    <span class="navAccount">18700462194</span>
+                    <span class="navAccount">{{username}}</span>
                     <el-dropdown @command="getOut">
                         <span class="el-dropdown-link cursor">
                             <i class="el-icon-caret-bottom el-icon--right"></i>
@@ -66,12 +66,18 @@
 export default {
     data(){
         return {
-            type:1
+            type:1,
+            username:''
         }
+    },
+    mounted(){
+        this.username = this.Util.getCookie('u')
     },
     methods:{
         getOut(){
-
+            this.axios.get('/account/Exit').then(response => {
+                this.$router.push('/lrBox')
+            })
         },
         change(val){
             this.type = val
@@ -111,9 +117,9 @@ export default {
 #teacher>header>.headerInfo>.flLogo>img{
     margin-right: 45px;
 }
-#teacher>header>.headerInfo>.flLogo>img{
+/* #teacher>header>.headerInfo>.flLogo>img{
     margin-top: -18px;
-}
+} */
 .fl{
     float: left;
 }

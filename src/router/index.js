@@ -12,6 +12,8 @@ import registerTeacher from '../components/login/register/registerTeacher'
 import teacher from '../components/teacher/index'
 import list from '../components/teacher/list/list'
 import info from '../components/teacher/list/info'
+import studentlist from '../components/teacher/list/studentList'
+import finish from '../components/teacher/list/finishInfo'
 // 学生部分
 import student from '../components/student/index'
 
@@ -69,7 +71,21 @@ export default new Router({
             },
             {
                 path: 'info',
-                component: info
+                component: info,
+                children: [
+                    {
+                        path: 'studentlist',
+                        component: studentlist
+                    },
+                    {
+                        path: 'finish',
+                        component: finish
+                    },
+                    {
+                        path: '/',
+                        redirect: 'studentlist'
+                    }
+                ]
             },
             {
                 path:'/',

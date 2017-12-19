@@ -9,7 +9,7 @@
             <i class="iconfont icon-mima"></i>
             <input type="text" placeholder="请输入密码" v-model='password'>
         </div>
-        <div class="btn next" @click='submitStudent'>提交</div>
+        <div class="btn next" @click='submitStudent' v-loading.fullscreen.lock="fullscreenLoading">提交</div>
     </div>
 </template>
 
@@ -18,7 +18,8 @@ export default {
     data(){
         return {
             number:'',
-            password: ''
+            password: '',
+            fullscreenLoading:false
         }
     },
     methods:{

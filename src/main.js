@@ -7,6 +7,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import qs from 'qs'
+import Util from '../static/js/util.js'
 var instance = axios.create({
     baseURL: '/api/'
 })
@@ -14,6 +15,7 @@ var instance = axios.create({
 Vue.use(ElementUI)
 Vue.prototype.qs = qs
 Vue.prototype.axios = instance
+Vue.prototype.Util = Util
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

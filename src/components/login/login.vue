@@ -43,14 +43,30 @@ export default {
           this.fullscreenLoading = true
           this.axios.post('/account/Login',this.qs.stringify({'username':this.username,'password':this.password})).then(response => {
               var res = response.data
-              this.fullscreenLoading = false
-              if (res == 1) {
-                  this.$router.push('/teacher')
-			  }else if(res == 2){
-                  this.$router.push('/student')
-			  }else if(res == 40000){
+              if(res == 40000){
+                  this.fullscreenLoading = false
                   this.$message.warning("对不起，用户名或密码错误")
-			  }
+			  }else{
+                  this.axios.get('/account/detail').then(response => {
+                      var resp = response.data
+                      this.fullscreenLoading = false
+                      if(resp.account){
+                          this.Util.setCookie('u',this.username)
+                          this.Util.setCookie('u_id',resp.account.id)
+                          this.Util.setCookie('s_id',resp.account.subjectId)
+                          if (res == 1) {
+                              this.$router.push('/teacher')
+            			  }else if(res == 2){
+                              this.$router.push('/student')
+            			  }
+                      }else{
+                          this.$message.error("获取用户信息失败")
+                      }
+                  }).catch(error => {
+                      this.fullscreenLoading = false
+                      this.$message.error(error)
+                  })
+              }
           }).catch(error => {
               this.fullscreenLoading = false
               this.$message.error(error)
