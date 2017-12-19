@@ -45,7 +45,7 @@
                             <button class="fr" @click="showInfo(item)">查看</button>
                         </div>
                         <div class="dataTime">
-                            <span>日期: {{item.startTime| getMDHM}}-{{item.endTime| getMDHM}}</span>
+                            <span>日期: {{item.startTime}} -- {{item.endTime}}</span>
                         </div>
                     </div>
                     <img src="./img/fenge.png" alt="">
@@ -59,8 +59,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
     data(){
         return {
@@ -81,7 +79,9 @@ export default {
     },
     filters:{
         dealTime:function(val) {
-            var date = new Date(val)
+            var YMD = val.split(" ")[0]
+            var time = val.split(" ")[1]
+            var date = new Date(YMD)
             var date1 = new Date()
             var year = date.getFullYear()
             var year1 = date1.getFullYear()
@@ -89,7 +89,7 @@ export default {
             var month1 = date1.getMonth() + 1
             var day =date1.getDate() - date.getDate()
             if(year != year1 || month != month1 || day>2){
-                return val
+                return YMD
             }else {
                 if(day = 2){
                     return '前天'
@@ -101,12 +101,10 @@ export default {
             }
         },
         getHours:function(val){
-            var date = new Date(val)
-            return date.getHours() + ":" +date.getMinutes()
+            return val.split(" ")[1]
         },
         getMDHM:function(val){
-            var date = new Date(val)
-            return date.getMonth() + 1 + "月" + date.getDate() + "日" + date.getHours() + ":" + date.getMinutes()
+            return
         },
         changeStatus:function(val){
             var word = ['','已检查','待检查']

@@ -13,20 +13,45 @@
             </li>
             <li>
                 <div class="hnumber">第一题</div>
-                <div class="hlv"><el-progress :text-inside="true" :stroke-width="18" :percentage="0"></el-progress></div>
+                <div class="hlv"><el-progress :text-inside="true" :stroke-width="18" :percentage="80"></el-progress></div>
                 <div class="hdeal">
                     <span>查看</span>
                 </div>
             </li>
         </ul>
         <ul class="fill">
-
+            <li class="title">填空题</li>
+            <li class="finishLv">
+                <span>1%</span>
+                平均准确率
+            </li>
+            <li class="theader">
+                <div class="hnumber">题号</div>
+                <div class="hlv">准确率</div>
+                <div class="hdeal">操作</div>
+            </li>
+            <li>
+                <div class="hnumber">第一题</div>
+                <div class="hlv"><el-progress :text-inside="true" :stroke-width="18" :percentage="0"></el-progress></div>
+                <div class="hdeal">
+                    <span>查看</span>
+                </div>
+            </li>
         </ul>
     </div>
 </template>
 
 <script>
 export default {
+    data(){
+        return {
+            chooselist:[],
+            filllist:[]
+        }
+    },
+    methods:{
+
+    }
 }
 </script>
 
@@ -34,6 +59,9 @@ export default {
 .homeworkInfo{
     width: 100%;
     padding-top:20px;
+}
+.homeworkInfo>.choose{
+    margin-bottom: 30px;
 }
 .homeworkInfo>ul>li{
     width: 100%;
@@ -50,6 +78,7 @@ export default {
     font-size:18px;
     color:#54abaa;
     text-indent: 10px;
+    background: rgba(0,0,0,0.05);
 }
 .homeworkInfo .finishLv{
     font-size:15px;
@@ -91,5 +120,13 @@ export default {
 }
 .homeworkInfo>ul>.theader>.hnumber{
     text-indent: 10px;
+}
+.el-progress-bar__outer{
+    border-radius: none !important;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+.el-progress-bar__inner{
+    border-radius: none !important;
+    background-color: #28b3b4 !important;
 }
 </style>

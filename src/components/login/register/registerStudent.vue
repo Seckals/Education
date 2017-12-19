@@ -33,7 +33,6 @@ export default {
                 this.$message.error("密码格式不正确")
             }else{
                 var info = this.$router.query
-                console.log(info)
                 info['userName'] = info.phone
                 info['passWord'] = this.password
                 info['studNo'] = this.number
