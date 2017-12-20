@@ -21,12 +21,12 @@
                         <i class="iconfont icon-group"></i>
                         <span>学生完成情况</span>
                     </router-link>
-                    <router-link :to="{path:'finish', query: {id:this.$route.query.id} }" tag="div" class="navItem" :class="{isActive:!isTog}"@click.native="changeIcon('lv')">
+                    <router-link :to="{path:'finish', query: {id:this.$route.query.id,amount:studentAmount,check:this.$route.query.check} }" tag="div" class="navItem" :class="{isActive:!isTog}"@click.native="changeIcon('lv')">
                         <i class="iconfont icon-chakanxiangqing"></i>
                         <span>作业详情</span>
                     </router-link>
                 </div>
-                <router-view />
+                <router-view @getMsg="getMsg" />
             </div>
         </section>
         <footer></footer>
@@ -37,7 +37,8 @@
 export default {
     data(){
         return {
-            isTog:true
+            isTog:true,
+            studentAmount:0
         }
     },
     methods:{
@@ -47,6 +48,9 @@ export default {
             }else if(val == 'lv'){
                 this.isTog = false
             }
+        },
+        getMsg(msg){
+            this.studentAmount = msg
         }
     }
 }
@@ -82,7 +86,7 @@ export default {
 }
 .info>section>.content{
     width: 844px;
-    min-height: 630px;
+    height: 100%;
     margin:0 auto;
 }
 .info>section>.content>.title{

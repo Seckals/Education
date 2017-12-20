@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="studentList" v-loading.fullscreen.lock="fullscreenLoading">
-        <ul>
+        <ul v-if="list.length > 0">
             <li class='theader'>
                 <span class="name">姓名</span>
                 <span class="number">学号</span>
@@ -43,7 +43,7 @@ export default {
     mounted(){
         this.getList(this.$route.query.id)
         if(this.$route.query.check == 1){
-            this.isCheck =true
+            this.isCheck = true
         }
     },
     methods:{
@@ -69,6 +69,7 @@ export default {
                 var resp = response.data
                 this.fullscreenLoading = false
                 this.list = resp.n.concat(resp.y)
+                this.$emit("getMsg",resp.sum_People)
             }).catch(error => {
                 this.fullscreenLoading = false
                 this.$message.error(error)

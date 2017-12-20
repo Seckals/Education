@@ -65,8 +65,8 @@ export default {
             isClassRotate:false,
             isStatusRotate:false,
             fullscreenLoading:false,
-            status:'',
-            classId:'',
+            status:0,
+            classId:'Null',
             statusStr:'全部',
             className:'全部',
             homeworkList:[],
@@ -75,7 +75,7 @@ export default {
     },
     mounted(){
         this.getClassList()
-        this.getHomeworkList(0,'Null')
+        this.getHomeworkList()
     },
     filters:{
         dealTime:function(val) {
@@ -130,7 +130,7 @@ export default {
                 this.classId = val
             }
             this.isblur()
-            this.getHomeworkList(this.status,this.classId)
+            this.getHomeworkList()
         },
         isblur(){
             this.isClassRotate = false
@@ -148,16 +148,17 @@ export default {
                 this.fullscreenLoading = false
                 if(resp.list){
                     this.classList = resp.list
+                    this.classList.unshift({classChar:"部",gradeChar:"全",id:"Null"})
                 }
             }).catch(error => {
                 this.fullscreenLoading = false
                 this.$message.error(error)
             })
         },
-        getHomeworkList(state,classId){
+        getHomeworkList(){
             this.fullscreenLoading = true
             var teacherId = this.Util.getCookie('u_id')
-            this.axios.get('/homework/findPublishDetail/1/'+teacherId+"/"+state+"/"+classId).then(response => {
+            this.axios.get('/homework/findPublishDetail/1/'+teacherId+"/"+this.status+"/"+this.classId).then(response => {
                 var resp = response.data
                 this.fullscreenLoading = false
                 if(resp.list){

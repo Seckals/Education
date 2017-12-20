@@ -47,11 +47,11 @@
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>
-                    <router-link :to="{ name: '', params: {} }" class="publish" :class="{publishActive:type==2}" @click.native='change(2)'><span></span></router-link>
+                    <router-link to="/teacher/publish" class="publish" :class="{publishActive:type==2}" @click.native='change(2)'><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>
-                    <router-link :to="{ name: '', params: {} }" class="library" :class="{libraryActive:type==3}" @click.native='change(3)'><span></span></router-link>
+                    <router-link to="/teacher/import" class="library" :class="{libraryActive:type==3}" @click.native='change(3)'><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
             </ul>
@@ -96,7 +96,7 @@ export default {
 }
 #teacher>header{
     width: 100%;
-    height: 67px;
+    height: 60px;
     background: #fff;
     margin-top: 52px;
     box-shadow: 1px 1px 1px #eeeeee;
@@ -109,7 +109,7 @@ export default {
 #teacher>header>.headerInfo>.flLogo,#teacher>header>.headerInfo>.fAccount{
     font-size: 0;
     height: 100%;
-    line-height: 67px;
+    line-height: 60px;
 }
 #teacher>header>.headerInfo>.flLogo>img,#teacher>header>.headerInfo>.fAccount>img{
     vertical-align: middle;
@@ -138,7 +138,7 @@ export default {
     vertical-align: top;
 }
 #teacher>header>.headerInfo>.fAccount>.accountInfo .icon-zhanghao{
-    font-size:23px;
+    font-size:20px;
 }
 #teacher>header>.headerInfo>.fAccount>.accountInfo .icon-f11-copy{
     font-size:20px;
@@ -146,7 +146,7 @@ export default {
     top: 2px;
 }
 #teacher>header>.headerInfo>.fAccount>.accountInfo span{
-    font-size:17px;
+    font-size:15px;
 }
 #teacher>header>.headerInfo>.fAccount>.accountInfo>.account{
     margin-left:8px;
@@ -198,7 +198,7 @@ export default {
     margin-bottom: 5px;
 }
 #teacher>.indexContent>.nav>li>.navAccount{
-    font-size:12pt;
+    font-size:12px;
     font-weight: bold;
     display: inline-block;
     width: 60px;
