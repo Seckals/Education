@@ -43,15 +43,15 @@
                     <img src="./img/line_left.png" alt="">
                 </li>
                 <li>
-                    <router-link to="/teacher/list" class="homework" :class="{homeworkActive:type==1}" @click.native='change(1)'><span></span></router-link>
+                    <router-link to="/teacher/list" class="homework"><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>
-                    <router-link to="/teacher/publish" class="publish" :class="{publishActive:type==2}" @click.native='change(2)'><span></span></router-link>
+                    <router-link to="/teacher/publish" class="publish"><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>
-                    <router-link to="/teacher/import" class="library" :class="{libraryActive:type==3}" @click.native='change(3)'><span></span></router-link>
+                    <router-link to="/teacher/import" class="library"><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
             </ul>
@@ -66,7 +66,6 @@
 export default {
     data(){
         return {
-            type:1,
             username:''
         }
     },
@@ -78,9 +77,6 @@ export default {
             this.axios.get('/account/Exit').then(response => {
                 this.$router.push('/lrBox')
             })
-        },
-        change(val){
-            this.type = val
         }
     }
 }
@@ -215,6 +211,9 @@ export default {
     margin:0 auto;
     background: url('./img/icon.png') no-repeat;
 }
+#teacher>.indexContent>.nav>li>.router-link-active>span{
+    background-position-x: -76px !important;
+}
 #teacher>.indexContent>.nav>li>.homework>span{
     height: 61px;
 }
@@ -226,15 +225,6 @@ export default {
     height: 64px;
     width:72px;
     background-position: 0 -127px;
-}
-.homeworkActive>span{
-    background-position:-76px 0 !important;
-}
-.publishActive>span{
-    background-position:-74px -61px !important;
-}
-.libraryActive>span{
-    background-position:-73px -127px !important;
 }
 .m49{
     margin-top: 49px;

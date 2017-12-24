@@ -2,38 +2,18 @@
     <div id="register">
         <img src="./img/register_logo.png">
         <div class="part">
-            <router-link :to="{ path: 'verify', query: {type:'teacher'} }" tag='div' class="partItem" @click.native="chengeIcon('teacher')">
-                <div class="portrait" :class="{tChoose:isChoose,tNChoose:!isChoose}"></div>
+            <router-link :to="{ path: 'verify', query: {type:'teacher'} }" tag='div' class="partItem">
+                <div class="portrait tNChoose"></div>
     			<p>我是老师</p>
             </router-link>
-            <router-link :to="{ path: 'verify', query: {type:'student'} }" tag='div' class="partItem" @click.native="chengeIcon('student')">
-                <div class="portrait" :class="{sChoose:!isChoose,sNChoose:isChoose}"></div>
+            <router-link :to="{ path: 'verify', query: {type:'student'} }" tag='div' class="partItem">
+                <div class="portrait sNChoose"></div>
     			<p>我是学生</p>
             </router-link>
     	</div>
         <router-view/>
     </div>
 </template>
-
-<script>
-export default {
-    data(){
-        return {
-            isChoose:true
-        }
-    },
-    methods:{
-        chengeIcon(val){
-            if(val == 'teacher'){
-                this.isChoose = true
-            }else if(val == 'student'){
-                this.isChoose = false
-            }
-        }
-    }
-}
-</script>
-
 <style>
 #register{
     width: 360px;
@@ -66,16 +46,13 @@ export default {
     margin: 0 auto 14px;
     background: url(./img/teacherIcon.png) no-repeat;
 }
-#register>.part>.partItem>.tChoose{
-    background-position: -45px 0;
-}
 #register>.part>.partItem>.tNChoose{
     background-position: 0 0;
 }
-#register>.part>.partItem>.sChoose{
-    background-position: -46px -55px;
-}
 #register>.part>.partItem>.sNChoose{
     background-position: 0 -55px;
+}
+#register>.part>.router-link-active>.portrait{
+    background-position-x: -45px !important;
 }
 </style>

@@ -10,6 +10,9 @@
                 <span>填空题</span>
             </router-link>
         </nav>
+        <div class="addInfo">
+            <router-view />
+        </div>
     </div>
 </template>
 
@@ -66,5 +69,8 @@ export default {
 }
 .addNav>nav>.router-link-active>.navIcon{
     background-position-y:0 !important;
+}
+.addNav>.addInfo{
+    padding-top: 20px;
 }
 </style>
