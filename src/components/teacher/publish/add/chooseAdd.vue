@@ -5,38 +5,61 @@
                 <span>1.</span><input type="text" name="" value="">
             </li>
             <li class="close"><i class="iconfont icon-guanbi1"></i></li>
-            <el-checkbox-group v-model="checkList">
-                <li>
-                    <span><i class="iconfont icon-guanbi1"></i>A.</span>
-                    <input type="text" name="" value="">
-                    <el-checkbox label="正确"></el-checkbox>
-                </li>
-                <li>
-                    <span><i class="iconfont icon-guanbi1"></i>B.</span>
-                    <input type="text" name="" value="">
-                    <el-checkbox label="正确"></el-checkbox>
-                </li>
-                <li>
-                    <span><i class="iconfont icon-guanbi1"></i>C.</span>
-                    <input type="text" name="" value="">
-                    <el-checkbox label="正确"></el-checkbox>
-                </li>
-                <li>
-                    <span><i class="iconfont icon-guanbi1"></i>D.</span>
-                    <input type="text" name="" value="">
-                    <el-checkbox label="正确"></el-checkbox>
-                </li>
-              </el-checkbox-group>
+            <li>
+                <span><i class="iconfont icon-guanbi1"></i>A.</span>
+                <input type="text" name="" value="">
+                <div class="checkBox">
+                    <i class="iconfont icon-duihao"></i>
+                    正确
+                </div>
+            </li>
+            <li>
+                <span><i class="iconfont icon-guanbi1"></i>A.</span>
+                <input type="text" name="" value="">
+                <div class="checkBox">
+                    <i class="iconfont icon-duihao"></i>
+                    正确
+                </div>
+            </li>
+            <li>
+                <span><i class="iconfont icon-guanbi1"></i>A.</span>
+                <input type="text" name="" value="">
+                <div class="checkBox">
+                    <i class="iconfont icon-duihao"></i>
+                    正确
+                </div>
+            </li>
+            <li>
+                <span><i class="iconfont icon-guanbi1"></i>A.</span>
+                <input type="text" name="" value="">
+                <div class="checkBox">
+                    <i class="iconfont icon-duihao"></i>
+                    正确
+                </div>
+            </li>
         </ul>
-        <i class="iconfont icon-add"></i>
+        <div class="itemAdd">
+            <i class="iconfont icon-add "></i>
+        </div>
+        <div class="btns questionAdd">
+            <button ><i class="iconfont icon-add"></i>添加题目 </button>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    data(){
-        return {
-            checkList:''
+    props:['isSubmitInfo'],
+    watch:{
+        isSubmitInfo(){
+            if(this.isSubmitInfo){
+                this.$emit("getBackInfo",{type:'choose',info:this.getChooseInfo()})
+            }
+        }
+    },
+    methods:{
+        getChooseInfo(){
+
         }
     }
 }
@@ -62,18 +85,45 @@ export default {
     padding: 7px 7px 0 0;
     margin-bottom: 0;
 }
+.chooseAddBox>.chooseItem>.close>i:hover{
+    color:#28b3b4;
+}
 .chooseAddBox>.chooseItem i{
     font-size: 20px;
     cursor: pointer;
     color: #a6cdba;
 }
-.chooseAddBox>.chooseItem>li,.chooseAddBox>.chooseItem>div>li{
+.chooseAddBox>.chooseItem>li{
     width: 100%;
     height: 39px;
     margin-bottom: 17px;
     font-size: 0;
 }
-.chooseAddBox>.chooseItem>li>span,.chooseAddBox>.chooseItem>div>li>span{
+.chooseAddBox>.chooseItem>li>.checkBox{
+    display: inline-block;
+    height: 100%;
+    line-height: 39px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.chooseAddBox>.chooseItem>li>.checkBox>i{
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
+    border:1px solid #d8e3e4;
+    vertical-align: top;
+    margin-left: 10px;
+    /* background: #eaf2f3; */
+    background: #fff;
+    vertical-align: middle;
+    line-height: 25px;
+    text-align: center;
+}
+.chooseAddBox>.chooseItem>li>.checkBox>i:before{
+    color: #bb2525;
+}
+.chooseAddBox>.chooseItem>li>span{
     display: inline-block;
     vertical-align: top;
     text-align: right;
@@ -83,10 +133,13 @@ export default {
     box-sizing: border-box;
     height: 39px;
 }
-.chooseAddBox>.chooseItem>div>li>span>i{
+.chooseAddBox>.chooseItem>li>span>i{
     margin-right: 7px;
 }
-.chooseAddBox>.chooseItem>li>input,.chooseAddBox>.chooseItem>div>li>input{
+.chooseAddBox>.chooseItem>li>span>i:hover{
+    color:#28b3b4;
+}
+.chooseAddBox>.chooseItem>li>input{
     display: inline-block;
     vertical-align: top;
     margin-left: 5px;
@@ -98,18 +151,41 @@ export default {
     border:1px solid rgb(199,212,214);
     box-sizing: border-box;
 }
-.el-checkbox__inner{
-    width: 30px !important;
-    height: 30px !important;
-    border-radius: 10px;
+.chooseAddBox>.itemAdd{
+    box-sizing: border-box;
+    border-bottom: 2px solid #33b7b7;
+    padding: 5px 0 15px 21px;
+    color: #a6cdba;
+    cursor: pointer;
 }
-.el-checkbox{
-    line-height: 39px;
-    padding-left: 10px;
+.chooseAddBox>.itemAdd>i{
+    font-size: 17px;
+    font-weight: bold;
 }
-.el-checkbox__label{
+.chooseAddBox>.itemAdd>i:hover{
+    color:#28b3b4;
+}
+.chooseAddBox>.questionAdd{
+    width: 100%;
+    padding: 8px 0;
+    text-align: right;
+}
+.chooseAddBox>.questionAdd>button{
+    color:#fff;
+    margin-right: 14px;
+    width: 99px;
+    height: 33px;
+    border-radius: 8px;
+    background: #ed6a47;
     font-size: 16px;
-    line-height: 39px;
-    color: #494848;
+    cursor: pointer;
+    box-shadow: 1px 1px 1px 1px #b9bfba;
+}
+.chooseAddBox>.questionAdd>button:hover{
+    background: #e16442
+}
+.chooseAddBox>.questionAdd>button>i{
+    font-size: 10px;
+    margin:0 3px;
 }
 </style>

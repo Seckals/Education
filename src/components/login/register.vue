@@ -47,12 +47,14 @@
     background: url(./img/teacherIcon.png) no-repeat;
 }
 #register>.part>.partItem>.tNChoose{
-    background-position: 0 0;
+    background-position-y:0;
+    background-position-x:0;
 }
 #register>.part>.partItem>.sNChoose{
-    background-position: 0 -55px;
+    background-position-y:-55px;
+    background-position-x: 0;
 }
-#register>.part>.router-link-active>.portrait{
+#register>.part>.router-link-exact-active>.portrait{
     background-position-x: -45px !important;
 }
 </style>

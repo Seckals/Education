@@ -42,21 +42,42 @@
                 </div>
                 <div class="cutLine"></div>
                 <div class="publishBody">
-                    <router-view />
+                    <div class="addNav">
+                        <nav>
+                            <div class="navItem" :class="{active:isActive}" @click="changeType('choose')">
+                                <div class="navIcon cIcon"></div>
+                                <span>选择题</span>
+                            </div>
+                            <div class="navItem" :class="{active:!isActive}" @click="changeType('fill')">
+                                <div class="navIcon fIcon"></div>
+                                <span>填空题</span>
+                            </div>
+                        </nav>
+                        <div class="addInfo">
+                            <addChoose v-if="infoType == 1" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addChoose>
+                            <addFill v-if="infoType == 2" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addFill>
+                            <showChoose v-if="infoType == 3" :info="fillInfo"></showChoose>
+                            <fillChoose v-if="infoType == 4" :info='chooseInfo'></fillChoose>
+                        </div>
+                    </div>
                 </div>
             </section>
             <footer></footer>
         </div>
         <div class="aside fr">
             <div class="title">单选题</div>
-            <div class="toLibrary"><i class="iconfont icon-fangdajing"></i>题库找题</div>
+            <div class="toLibrary" @click="toLibrary"><i class="iconfont icon-fangdajing"></i>题库找题</div>
             <div class="toImport"><i class="iconfont icon-xiazai"></i>文档载入</div>
-            <div class="btnBox"><button class="preview">预览</button><button class="submit">提交</button></div>
+            <div class="btnBox"><button class="preview" @click='preview'>{{text}}</button><button class="submit">提交</button></div>
         </div>
     </div>
 </template>
 
 <script>
+import addChoose from './add/chooseAdd'
+import addFill from './add/fillAdd'
+import showChoose from './show/chooseShow'
+import fillChoose from './show/fillShow'
 export default {
     data(){
         return {
@@ -70,9 +91,17 @@ export default {
             ce:'上',
             hadUnit:'一单元',
             title:'',
-            isInputShow:true
+            isInputShow:true,
+            isActive:true,
+            infoType:1,          // 1.添加选择题 2.添加填空题 3.查看选择题 4.查看填空题
+            backInfo:false,
+            fillInfo:'',
+            chooseInfo:'',
+            isShow:false,        // 预览
+            text:'预览'
         }
     },
+    components:{addChoose,addFill,showChoose,fillChoose},
     mounted(){
         this.fullscreenLoading = true
         var teacherId = this.Util.getCookie('u_id')
@@ -89,6 +118,53 @@ export default {
         })
     },
     methods:{
+        preview(){
+            this.backInfo = true
+            if(this.isShow){
+                this.text = '预览'
+                this.isShow = false
+                this.infoType = 1
+                this.isActive = true
+            }else{
+                this.text = '返回修改'
+                this.isShow = true
+                this.infoType = 3
+                this.isActive = true
+            }
+        },
+        changeType(str){
+            if(this.isShow){
+                this.backInfo = true
+                if(str == 'choose'){
+                    this.isActive = true
+                    this.infoType = 3
+                }else if(str == 'fill'){
+                    this.isActive = false
+                    this.infoType = 4
+                }
+            }else{
+                if(str == 'choose'){
+                    this.isActive = true
+                    this.infoType = 1
+                }else if(str == 'fill'){
+                    this.isActive = false
+                    this.infoType = 2
+                }
+                this.backInfo = true
+            }
+        },
+        getBackInfo(msg){
+            if(msg.type == 'choose'){
+                this.chooseInfo = msg.info
+            }else if(msg.type == 'fill'){
+                this.fillInfo = msg.info
+            }
+        },
+        toLibrary(){
+            this.backInfo = true
+            this.Util.setLocalStorage('info',escape({choose:this.chooseInfo,fill:this.fillInfo}))
+            this.$router.push({path:'/teacher/box/library',query:{name:'info'}})
+        },
         showList(type){
             this[type] = !this[type]
         },
@@ -323,5 +399,57 @@ export default {
 }
 .publish>.aside>.btnBox>.submit:hover{
     background: #24a6a7
+}
+/**********************************************************  addNav ********************************/
+.addNav{
+    width: 100%;
+}
+.addNav>nav{
+    width: 100%;
+    height: 117px;
+    background: rgba(0,0,0,0.05);
+}
+.addNav>nav>.navItem{
+    width: 150px;
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding-top: 17px;
+}
+.addNav>nav>.navItem>.navIcon{
+    width: 50px;
+    height: 51px;
+    margin:0 auto;
+    background: url('./img/add.png') no-repeat;
+}
+.addNav>nav>.navItem>.cIcon{
+    background-position: -50px -51px;
+}
+.addNav>nav>.navItem>.fIcon{
+    background-position: 0 -51px;
+}
+.addNav>nav>.navItem>span{
+    display: block;
+    width: 100%;
+    font-size: 15px;
+    text-align: center;
+    line-height: 35px;
+    color: #3a3b3b;
+    font-weight: 500;
+}
+.addNav>nav>.active{
+    background: #def1e5 !important;
+    border-top: 4px solid #28b3b4;
+}
+.addNav>nav>.active>span{
+    color:#28b3b4 !important;
+}
+.addNav>nav>.active>.navIcon{
+    background-position-y:0 !important;
+}
+.addNav>.addInfo{
+    padding-top: 20px;
 }
 </style>
