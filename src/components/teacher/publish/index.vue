@@ -1,83 +1,88 @@
 <template lang="html">
-    <div class="publish clearfix" v-loading.fullscreen.lock="fullscreenLoading">
-        <div class="content fl">
-            <header></header>
-            <section>
-                <div class="publishHeader">
-                    <div class="selectBox">
-                        <span class="selectLabel">年级</span>
-                        <span class="selectInfo">{{grade.gradeChar}}({{ce}})</span>
-                        <div class="changlist" @blur="isblur" tabindex="1">
-                            <i class="iconfont icon-f11-copy" :class="{gradeActive:isGradeShow}" @click="showList('isGradeShow')">更换年级</i>
-                            <ul v-show="isGradeShow">
-                                <li v-for="(item,index) in list" @click="showCe(index)">
-                                    {{item.gradeChar}}
-                                    <ul v-show="isCeShow == index">
-                                        <li @click="hadChoose(item,'上')">上册</li>
-                                        <li @click="hadChoose(item,'下')">下册</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="selectBox">
-                        <span class="selectLabel">单元</span>
-                        <span class="selectInfo">{{hadUnit}}</span>
-                        <div class="changlist" @blur="isblur" tabindex="1">
-                            <i class="iconfont icon-f11-copy" :class="{gradeActive:isUnitShow}" @click="showList('isUnitShow')">更换单元</i>
-                            <ul v-show="isUnitShow">
-                                <li v-for="(item,index) in unit" @click="chooseUnit(item)">
-                                    {{item}}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="selectBox">
-                        <span class="selectLabel">名称</span>
-                        <div class="publishTitle">
-                            <input type="text" v-if="isInputShow" v-model="title" @blur="inputChangeShow('editor')">
-                            <span v-if="!isInputShow">{{title}} <i class="iconfont icon-xiugai" @click="inputChangeShow('input')">修改</i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="cutLine"></div>
-                <div class="publishBody">
-                    <div class="addNav">
-                        <nav>
-                            <div class="navItem" :class="{active:isActive}" @click="changeType('choose')">
-                                <div class="navIcon cIcon"></div>
-                                <span>选择题</span>
+    <div id="publish">
+        <div class="publish" v-loading.fullscreen.lock="fullscreenLoading">
+            <div class="content">
+                <header></header>
+                <section>
+                    <div class="publishHeader">
+                        <div class="selectBox">
+                            <span class="selectLabel">年级</span>
+                            <span class="selectInfo">{{grade.gradeChar}}({{ce}})</span>
+                            <div class="changlist" @blur="isblur" tabindex="1">
+                                <i class="iconfont icon-f11-copy" :class="{gradeActive:isGradeShow}" @click="showList('isGradeShow')">更换年级</i>
+                                <ul v-show="isGradeShow">
+                                    <li v-for="(item,index) in list" @click="showCe(index)">
+                                        {{item.gradeChar}}
+                                        <ul v-show="isCeShow == index">
+                                            <li @click="hadChoose(item,'上')">上册</li>
+                                            <li @click="hadChoose(item,'下')">下册</li>
+                                        </ul>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="navItem" :class="{active:!isActive}" @click="changeType('fill')">
-                                <div class="navIcon fIcon"></div>
-                                <span>填空题</span>
+                        </div>
+                        <div class="selectBox">
+                            <span class="selectLabel">单元</span>
+                            <span class="selectInfo">{{hadUnit}}</span>
+                            <div class="changlist" @blur="isblur" tabindex="1">
+                                <i class="iconfont icon-f11-copy" :class="{gradeActive:isUnitShow}" @click="showList('isUnitShow')">更换单元</i>
+                                <ul v-show="isUnitShow">
+                                    <li v-for="(item,index) in unit" @click="chooseUnit(item)">
+                                        {{item}}
+                                    </li>
+                                </ul>
                             </div>
-                        </nav>
-                        <div class="addInfo">
-                            <addChoose v-if="infoType == 1" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addChoose>
-                            <addFill v-if="infoType == 2" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addFill>
-                            <showChoose v-if="infoType == 3" :info="fillInfo"></showChoose>
-                            <fillChoose v-if="infoType == 4" :info='chooseInfo'></fillChoose>
+                        </div>
+                        <div class="selectBox">
+                            <span class="selectLabel">名称</span>
+                            <div class="publishTitle">
+                                <input type="text" v-if="isInputShow" v-model="title" @blur="inputChangeShow('editor')">
+                                <span v-if="!isInputShow">{{title}} <i class="iconfont icon-xiugai" @click="inputChangeShow('input')">修改</i></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <footer></footer>
+                    <div class="cutLine"></div>
+                    <div class="publishBody">
+                        <div class="addNav">
+                            <nav>
+                                <div class="navItem" :class="{active:isActive}" @click="changeType('choose')">
+                                    <div class="navIcon cIcon"></div>
+                                    <span>选择题</span>
+                                </div>
+                                <div class="navItem" :class="{active:!isActive}" @click="changeType('fill')">
+                                    <div class="navIcon fIcon"></div>
+                                    <span>填空题</span>
+                                </div>
+                            </nav>
+                            <div class="addInfo">
+                                <addChoose v-show="infoType == 1" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addChoose>
+                                <addFill v-show="infoType == 2" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addFill>
+                                <showChoose v-show="infoType == 3" :chooseInfo="chooseInfo"></showChoose>
+                                <fillChoose v-show="infoType == 4" :fillInfo="fillInfo"></fillChoose>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer></footer>
+            </div>
+            <div class="aside">
+                <div class="title">单选题</div>
+                <div class="toLibrary" @click="toLibrary"><i class="iconfont icon-fangdajing"></i>题库找题</div>
+                <div class="toImport"><i class="iconfont icon-xiazai"></i>文档载入</div>
+                <div class="btnBox"><button class="preview" @click='preview'>{{text}}</button><button class="submit" @click="submit">提交</button></div>
+            </div>
         </div>
-        <div class="aside fr">
-            <div class="title">单选题</div>
-            <div class="toLibrary" @click="toLibrary"><i class="iconfont icon-fangdajing"></i>题库找题</div>
-            <div class="toImport"><i class="iconfont icon-xiazai"></i>文档载入</div>
-            <div class="btnBox"><button class="preview" @click='preview'>{{text}}</button><button class="submit">提交</button></div>
-        </div>
+        <addClass :info='submitInfo' v-show="isAddClassShow" @close="close"></addClass>
     </div>
 </template>
 
 <script>
 import addChoose from './add/chooseAdd'
 import addFill from './add/fillAdd'
+import addClass from './add/addClass'
 import showChoose from './show/chooseShow'
 import fillChoose from './show/fillShow'
+
 export default {
     data(){
         return {
@@ -98,10 +103,12 @@ export default {
             fillInfo:'',
             chooseInfo:'',
             isShow:false,        // 预览
-            text:'预览'
+            text:'预览',
+            isAddClassShow:false,
+            submitInfo:{classInfo:'',question:''}
         }
     },
-    components:{addChoose,addFill,showChoose,fillChoose},
+    components:{addChoose,addFill,showChoose,fillChoose,addClass},
     mounted(){
         this.fullscreenLoading = true
         var teacherId = this.Util.getCookie('u_id')
@@ -118,23 +125,38 @@ export default {
         })
     },
     methods:{
+        close(msg){
+            this.isAddClassShow = false
+        },
+        submit(){
+            var l = [
+                        {classChar:"三班",classGrade:"3",className:"3",gradeChar:"三年级",id:"8427098693"},
+                        {classChar:"一班",classGrade:"3",className:"1",gradeChar:"三年级",id:"8427098693"},
+                        {classChar:"二班",classGrade:"3",className:"2",gradeChar:"三年级",id:"8427098693"},
+                        {classChar:"三班",classGrade:"4",className:"3",gradeChar:"四年级",id:"8427098693"}
+                    ]
+                    this.classInfo = this.unique(l)
+            // this.submitInfo.classInfo = this.unique(this.list)
+            // this.submitInfo.question = ''
+            this.isAddClassShow = true
+        },
         preview(){
-            this.backInfo = true
             if(this.isShow){
                 this.text = '预览'
                 this.isShow = false
                 this.infoType = 1
                 this.isActive = true
+                this.backInfo = false
             }else{
                 this.text = '返回修改'
                 this.isShow = true
                 this.infoType = 3
                 this.isActive = true
+                this.backInfo = true
             }
         },
         changeType(str){
             if(this.isShow){
-                this.backInfo = true
                 if(str == 'choose'){
                     this.isActive = true
                     this.infoType = 3
@@ -150,20 +172,21 @@ export default {
                     this.isActive = false
                     this.infoType = 2
                 }
-                this.backInfo = true
             }
         },
         getBackInfo(msg){
-            if(msg.type == 'choose'){
-                this.chooseInfo = msg.info
-            }else if(msg.type == 'fill'){
-                this.fillInfo = msg.info
+            console.log(msg)
+            if(msg.hasOwnProperty('choose')){
+                this.chooseInfo = msg['choose']
+                console.log(this.chooseInfo)
+            }else if(msg.hasOwnProperty('fill')){
+                this.fillInfo = msg['fill']
             }
         },
         toLibrary(){
-            this.backInfo = true
-            this.Util.setLocalStorage('info',escape({choose:this.chooseInfo,fill:this.fillInfo}))
-            this.$router.push({path:'/teacher/box/library',query:{name:'info'}})
+            // this.backInfo = true
+            // this.Util.setLocalStorage('info',escape({choose:this.chooseInfo,fill:this.fillInfo}))
+            // this.$router.push({path:'/teacher/box/library',query:{name:'info'}})
         },
         showList(type){
             this[type] = !this[type]
@@ -190,6 +213,24 @@ export default {
             }else if(val == 'input'){
                 this.isInputShow = true
             }
+        },
+        unique(array){
+            var n = {}
+            var arr = []
+            for(var i = 0; i < array.length; i++){
+                if(n.hasOwnProperty(array[i]['classGrade'])){
+                    n[array[i]['classGrade']]['class'].push({name:array[i]['classChar'],id:array[i]['id'],isChoose:false,time:''})
+                }else{
+                    n[array[i]['classGrade']] = {
+                        name:array[i]['gradeChar'],
+                        class:[{name:array[i]['classChar'],id:array[i]['id'],isChoose:false,time:''}]
+                    }
+                }
+            }
+            for(var j in n){
+                arr.push(n[j])
+            }
+            return arr;
         }
     }
 }
@@ -198,6 +239,8 @@ export default {
 <style lang="css">
 .publish{
     width: 920px;
+    display: flex;
+    justify-content: space-between;
 }
 .publish>.content{
     width: 772px;

@@ -2,11 +2,11 @@
     <div id="teacher">
         <header>
             <div class="headerInfo">
-                <div class="fl flLogo">
+                <div class="flLogo">
                     <img src="./img/qiStar.png">
                     <img src="./img/plan1.png">
                 </div>
-                <div class="fr fAccount">
+                <div class="fAccount">
                     <div class="accountInfo">
                             <i class="iconfont icon-zhanghao"></i>
                             <span class='account'>{{username}}</span>
@@ -23,8 +23,8 @@
                 </div>
             </div>
         </header>
-        <div class="indexContent clearfix">
-            <ul class="fl nav">
+        <div class="indexContent">
+            <ul class="nav">
                 <li>
                     <div class="navLogo">
                         <img src="./img/logo_pic.png" alt="">
@@ -47,7 +47,7 @@
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>
-                    <router-link to="/teacher/box" class="publish"><span></span></router-link>
+                    <router-link to="/teacher/box" class="publishTab"><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>
@@ -55,10 +55,9 @@
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
             </ul>
-            <div class="fr">
-                <router-view/>
-            </div>
+            <router-view/>
         </div>
+        <div class="teacherBg"></div>
     </div>
 </template>
 
@@ -83,12 +82,23 @@ export default {
 </script>
 
 <style lang="css">
+#teacher>.teacherBg{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    left:0;
+    background: url('./img/bg.png') no-repeat;
+    background-size: cover;
+    z-index: -100;
+}
 #teacher{
     position: absolute;
     width: 100%;
-    height: 100%;
-    background: url('./img/bg.png') no-repeat;
-    background-size: cover;
+    left:0;
+    right: 0;
+    top:0;
+    bottom:0;
 }
 #teacher>header{
     width: 100%;
@@ -101,6 +111,8 @@ export default {
     width: 1024px;
     height: 100%;
     margin:0 auto;
+    display: flex;
+    justify-content: space-between;
 }
 #teacher>header>.headerInfo>.flLogo,#teacher>header>.headerInfo>.fAccount{
     font-size: 0;
@@ -112,15 +124,6 @@ export default {
 }
 #teacher>header>.headerInfo>.flLogo>img{
     margin-right: 45px;
-}
-/* #teacher>header>.headerInfo>.flLogo>img{
-    margin-top: -18px;
-} */
-.fl{
-    float: left;
-}
-.fr{
-    float: right;
 }
 #teacher>header>.headerInfo>.fAccount>.accountInfo{
     font-size:0;
@@ -177,6 +180,8 @@ export default {
 #teacher>.indexContent{
     width: 1024px;
     margin: 0 auto;
+    display: flex;
+    justify-content:space-between;
 }
 #teacher>.indexContent>.nav{
     width: 80px;
@@ -217,7 +222,7 @@ export default {
 #teacher>.indexContent>.nav>li>.homework>span{
     height: 61px;
 }
-#teacher>.indexContent>.nav>li>.publish>span{
+#teacher>.indexContent>.nav>li>.publishTab>span{
     height: 68px;
     background-position:0 -61px;
 }

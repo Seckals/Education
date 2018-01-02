@@ -1,65 +1,79 @@
 <template lang="html">
     <div class="chooseAddBox">
-        <ul class="chooseItem">
-            <li class="chooseItemTitle">
-                <span>1.</span><input type="text" name="" value="">
-            </li>
-            <li class="close"><i class="iconfont icon-guanbi1"></i></li>
-            <li>
-                <span><i class="iconfont icon-guanbi1"></i>A.</span>
-                <input type="text" name="" value="">
-                <div class="checkBox">
-                    <i class="iconfont icon-duihao"></i>
-                    正确
-                </div>
-            </li>
-            <li>
-                <span><i class="iconfont icon-guanbi1"></i>A.</span>
-                <input type="text" name="" value="">
-                <div class="checkBox">
-                    <i class="iconfont icon-duihao"></i>
-                    正确
-                </div>
-            </li>
-            <li>
-                <span><i class="iconfont icon-guanbi1"></i>A.</span>
-                <input type="text" name="" value="">
-                <div class="checkBox">
-                    <i class="iconfont icon-duihao"></i>
-                    正确
-                </div>
-            </li>
-            <li>
-                <span><i class="iconfont icon-guanbi1"></i>A.</span>
-                <input type="text" name="" value="">
-                <div class="checkBox">
-                    <i class="iconfont icon-duihao"></i>
-                    正确
-                </div>
-            </li>
-        </ul>
-        <div class="itemAdd">
-            <i class="iconfont icon-add "></i>
+        <div class="">
+            <ul class="chooseItem" v-for="(item,index) in list">
+                <li class="chooseItemTitle">
+                    <span>{{index+1}}.</span><input type="text" v-model='item.title'>
+                </li>
+                <li class="close"><i class="iconfont icon-guanbi1" @click='del(index)'></i></li>
+                <li v-for='(ite,index) in item.answer'>
+                    <span><i class="iconfont icon-guanbi1" @click='delItem(item.answer,index)'></i>{{index | toUpper}}.</span>
+                    <input type="text" v-model='ite.info'>
+                    <div class="checkBox">
+                        <i class="iconfont" :class="{'icon-duihao':ite.isTure}" @click='setTure(ite)'></i>
+                        正确
+                    </div>
+                </li>
+                <li class="itemAdd">
+                    <i class="iconfont icon-add" @click="addItem(item.answer)"></i>
+                </li>
+            </ul>
         </div>
         <div class="btns questionAdd">
-            <button ><i class="iconfont icon-add"></i>添加题目 </button>
+            <button @click="add"><i class="iconfont icon-add"></i>添加题目 </button>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    props:['isSubmitInfo'],
+    data(){
+        return {
+            list:[{title:'',answer:[{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false}]}]
+        }
+    },
+    props:['isSubmitChooseInfo'],
     watch:{
-        isSubmitInfo(){
-            if(this.isSubmitInfo){
-                this.$emit("getBackInfo",{type:'choose',info:this.getChooseInfo()})
+        isSubmitChooseInfo(){
+            if(this.isSubmitChooseInfo){
+                this.$emit("getBackInfo",{'choose':this.list})
             }
         }
     },
+    filters:{
+        toUpper(val){
+            var word = ['A','B','C','D','E','F','G']
+            return word[val]
+        }
+    },
     methods:{
-        getChooseInfo(){
-
+        setTure(item){
+            item.isTure = !item.isTure
+        },
+        del(i){
+            if(this.list.length > 1){
+                this.list.splice(i,1)
+            }else{
+                this.$message.error('已超出删除限制')
+            }
+        },
+        delItem(list,i){
+            if(list.length > 1){
+                list.splice(i,1)
+            }else{
+                this.$message.error('已超出删除限制')
+            }
+        },
+        addItem(item){
+            if(item.length < 7){
+                var i = {name:'',info:'',isTure:false}
+                item.push(i)
+            }else {
+                this.$message.error('最多添加7个选项')
+            }
+        },
+        add(){
+            this.list.push({title:'',answer:[{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false}]})
         }
     }
 }
@@ -71,11 +85,15 @@ export default {
     border-radius: 10px;
     overflow: hidden;
 }
-.chooseAddBox>.chooseItem{
+.chooseAddBox>div>.chooseItem{
     padding-top: 25px;
     position: relative;
+    border-bottom: 1px solid #28b3b4;
 }
-.chooseAddBox>.chooseItem>.close{
+.chooseAddBox>div>.chooseItem:last-child{
+    border-bottom-width: 2px !important;
+}
+.chooseAddBox>div>.chooseItem>.close{
     position: absolute;
     right: 0;
     top:0;
@@ -85,28 +103,29 @@ export default {
     padding: 7px 7px 0 0;
     margin-bottom: 0;
 }
-.chooseAddBox>.chooseItem>.close>i:hover{
+.chooseAddBox>div>.chooseItem>.close>i:hover{
     color:#28b3b4;
 }
-.chooseAddBox>.chooseItem i{
+.chooseAddBox>div>.chooseItem i{
     font-size: 20px;
     cursor: pointer;
     color: #a6cdba;
 }
-.chooseAddBox>.chooseItem>li{
+.chooseAddBox>div>.chooseItem>li{
     width: 100%;
     height: 39px;
     margin-bottom: 17px;
     font-size: 0;
+    user-select:none;
 }
-.chooseAddBox>.chooseItem>li>.checkBox{
+.chooseAddBox>div>.chooseItem>li>.checkBox{
     display: inline-block;
     height: 100%;
     line-height: 39px;
     font-size: 16px;
     font-weight: bold;
 }
-.chooseAddBox>.chooseItem>li>.checkBox>i{
+.chooseAddBox>div>.chooseItem>li>.checkBox>i{
     display: inline-block;
     width: 25px;
     height: 25px;
@@ -120,10 +139,10 @@ export default {
     line-height: 25px;
     text-align: center;
 }
-.chooseAddBox>.chooseItem>li>.checkBox>i:before{
+.chooseAddBox>div>.chooseItem>li>.checkBox>i:before{
     color: #bb2525;
 }
-.chooseAddBox>.chooseItem>li>span{
+.chooseAddBox>div>.chooseItem>li>span{
     display: inline-block;
     vertical-align: top;
     text-align: right;
@@ -133,13 +152,13 @@ export default {
     box-sizing: border-box;
     height: 39px;
 }
-.chooseAddBox>.chooseItem>li>span>i{
+.chooseAddBox>div>.chooseItem>li>span>i{
     margin-right: 7px;
 }
-.chooseAddBox>.chooseItem>li>span>i:hover{
+.chooseAddBox>div>.chooseItem>li>span>i:hover{
     color:#28b3b4;
 }
-.chooseAddBox>.chooseItem>li>input{
+.chooseAddBox>div>.chooseItem>li>input{
     display: inline-block;
     vertical-align: top;
     margin-left: 5px;
@@ -151,18 +170,18 @@ export default {
     border:1px solid rgb(199,212,214);
     box-sizing: border-box;
 }
-.chooseAddBox>.itemAdd{
+.chooseAddBox>div>.chooseItem>.itemAdd{
     box-sizing: border-box;
-    border-bottom: 2px solid #33b7b7;
-    padding: 5px 0 15px 21px;
+    padding: 0 0 15px 21px;
     color: #a6cdba;
     cursor: pointer;
+    margin-bottom: 0 !important;
 }
-.chooseAddBox>.itemAdd>i{
+.chooseAddBox>div>.chooseItem>.itemAdd>i{
     font-size: 17px;
     font-weight: bold;
 }
-.chooseAddBox>.itemAdd>i:hover{
+.chooseAddBox>div>.chooseItem>.itemAdd>i:hover{
     color:#28b3b4;
 }
 .chooseAddBox>.questionAdd{

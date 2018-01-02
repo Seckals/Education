@@ -39,10 +39,12 @@
                                 <span>{{item.finishPeople}}</span>/{{item.education_Grade_And_Class.peopleNumber}}人
                             </span>
                         </div>
-                        <div class="itemInfo clearfix">
-                            <span class="w370">内容: {{item.homework_Job_Father.jobName}}</span>
-                            <span class="c28b3b4 f14">已完成</span>
-                            <button class="fr" @click="showInfo(item)">查看</button>
+                        <div class="itemInfo">
+                            <div>
+                                <span class="w370">内容: {{item.homework_Job_Father.jobName}}</span>
+                                <span class="c28b3b4 f14">已完成</span>
+                            </div>
+                            <button @click="showInfo(item)">查看</button>
                         </div>
                         <div class="dataTime">
                             <span>日期: {{item.startTime}} -- {{item.endTime}}</span>
@@ -316,6 +318,10 @@ export default {
 .w370{
     min-width: 370px;
 }
+.itemInfo{
+    display: flex;
+    justify-content: space-between;
+}
 .itemInfo>button{
     width: 60px;
     height: 30px;
@@ -329,10 +335,17 @@ export default {
 .itemInfo>button:hover{
         background: #28b3b9;
 }
+.itemInfo>div>span{
+    display: inline-block;
+    font-size: 16px;
+}
 .c28b3b4{
     color: #28b3b4;
 }
 .f14{
     font-size: 14px !important;
+}
+.fr{
+    float: right;
 }
 </style>
