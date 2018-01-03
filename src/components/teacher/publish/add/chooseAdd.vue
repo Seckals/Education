@@ -10,7 +10,7 @@
                     <span><i class="iconfont icon-guanbi1" @click='delItem(item.answer,index)'></i>{{index | toUpper}}.</span>
                     <input type="text" v-model='ite.info'>
                     <div class="checkBox">
-                        <i class="iconfont" :class="{'icon-duihao':ite.isTure}" @click='setTure(ite)'></i>
+                        <i class="iconfont" :class="{'icon-duihao':ite.isTrue}" @click='setTure(ite)'></i>
                         正确
                     </div>
                 </li>
@@ -29,16 +29,17 @@
 export default {
     data(){
         return {
-            list:[{title:'',answer:[{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false}]}]
+            list:[{title:'',answer:[{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false}]}]
         }
     },
-    props:['isSubmitChooseInfo'],
-    watch:{
-        isSubmitChooseInfo(){
-            if(this.isSubmitChooseInfo){
-                this.$emit("getBackInfo",{'choose':this.list})
-            }
+    mounted(){
+        var info = this.Util.getLocalStorage('c')
+        if(typeof(info) != 'undefined'){
+            this.list = JSON.parse(this.Base64.decode(info))
         }
+    },
+    beforeDestroy(){
+        this.Util.setLocalStorage('c',this.Base64.encode(JSON.stringify(this.list)))
     },
     filters:{
         toUpper(val){
@@ -48,7 +49,7 @@ export default {
     },
     methods:{
         setTure(item){
-            item.isTure = !item.isTure
+            item.isTrue = !item.isTrue
         },
         del(i){
             if(this.list.length > 1){
@@ -66,14 +67,34 @@ export default {
         },
         addItem(item){
             if(item.length < 7){
-                var i = {name:'',info:'',isTure:false}
+                var i = {name:'',info:'',isTrue:false}
                 item.push(i)
             }else {
                 this.$message.error('最多添加7个选项')
             }
         },
         add(){
-            this.list.push({title:'',answer:[{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false},{name:'',info:'',isTure:false}]})
+            this.list.push({title:'',answer:[{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false}]})
+        },
+        detection(){
+            for(var i=0;i<this.list.length;i++){
+                if(this.list[i].title==''){
+                    return false
+                }else {
+                    var m = 0
+                    for(var j=0;j<this.list[i].answer.length;j++){
+                        if(this.list[i].answer[j].info==''){
+                            return false
+                        }else if(this.list[i].answer[j].isTrue==false){
+                            m++
+                        }
+                    }
+                    if(m == this.list[i].answer.length){
+                        return false
+                    }
+                }
+            }
+            return true
         }
     }
 }

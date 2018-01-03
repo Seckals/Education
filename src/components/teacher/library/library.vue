@@ -34,19 +34,16 @@
             </div>
             <div class="importBody">
                 <div class="importNav">
-                    <router-link to="choose" tag="div" class="importNavItem" @click.navtive="changeType">选择题</router-link>
-                    <router-link to="fill" tag="div" class="importNavItem" @click.navtive="changeType">填空题</router-link>
-                    <div class="checkAll">
-                        <span v-if="!isCheckAll" @click="checkAll">全选</span>
-                        <span class="noCheckAll" v-if="isCheckAll" @click="checkAll">取消全选</span>
-                    </div>
+                    <div class="importNavItem" :class="{'router-link-active':type=='c'}" @click="changeType('c')">选择题</div>
+                    <div class="importNavItem" :class="{'router-link-active':type=='f'}" @click="changeType('f')">填空题</div>
                 </div>
                 <div class="importContent">
-                    <router-view :info='message' @getBackInfo = 'getBackInfo'/>
+                    <choose :sendInfo='info' v-show="type=='c'"></choose>
+                    <fill :sendInfo='info' v-show="type=='f'"></fill>
                 </div>
             </div>
             <div class="submit">
-                <button>提交</button>
+                <button @click='submit'>提交</button>
             </div>
         </section>
         <footer></footer>
@@ -54,6 +51,9 @@
 </template>
 
 <script>
+import choose from './show/choose'
+import fill from './show/fill'
+
 export default {
     data(){
         return {
@@ -66,29 +66,31 @@ export default {
             hadUnit:'一单元',
             grade:{},
             ce:'上',
-            isCheckAll:false,
-            message:{
-                type:'choose',
-                isCheckAll:false
-            }
+            info:'',
+            type:'c'
         }
     },
+    components:{choose,fill},
     mounted(){
-        this.fullscreenLoading = true
-        var teacherId = this.Util.getCookie('u_id')
-        this.axios.get('/homework/CSM/'+teacherId+"/1").then(response => {
-            var resp = response.data
-            this.fullscreenLoading = false
-            if(resp.list.length > 0){
-                this.list = resp.list
-                this.grade = resp.list[0]
-            }
-        }).catch(error => {
-            this.fullscreenLoading = false
-            this.$message.error(error)
-        })
+        this.getClassList()
     },
     methods:{
+        submit(){
+            var bcstr = this.Util.getLocalStorage('bc')
+            var bfstr = this.Util.getLocalStorage('bf')
+            var cstr = this.Util.getLocalStorage('bc')
+            var fstr = this.Util.getLocalStorage('bf')
+            var bc,bf,c,f
+            typeof(bcstr) != 'undefined'?bc = JSON.parse(this.Base64.decode(bcstr)):bc=[]
+            typeof(bfstr) != 'undefined'?bf = JSON.parse(this.Base64.decode(bfstr)):bf=[]
+            typeof(cstr) != 'undefined'?c = JSON.parse(this.Base64.decode(cstr)):c=[]
+            typeof(fstr) != 'undefined'?f = JSON.parse(this.Base64.decode(fstr)):f=[]
+            this.Util.setLocalStorage('c',this.Base64.encode(JSON.stringify(bc.concat(c))))
+            this.Util.setLocalStorage('f',this.Base64.encode(JSON.stringify(bf.concat(f))))
+            this.Util.removeLocalStorage(bc)
+            this.Util.removeLocalStorage(bf)
+            this.$router.push('/teacher/box/publish/add')
+        },
         isblur(){
             this.isGradeShow = false
             this.isUnitShow = false
@@ -102,31 +104,68 @@ export default {
         chooseUnit(val){
             this.hadUnit = val
             this.isUnitShow = false
+            this.info = {
+                type:this.type,
+                subject:'语文',
+                grade:this.grade.classGrade,
+                element:val,
+                using:this.ce,
+                page:1
+            }
         },
         hadChoose(item,val){
             this.grade = item
             this.ce = val
             this.isGradeShow = false
-        },
-        changeType(){
-            this.isCheckAll = false
-        },
-        checkAll(str){
-            this.isCheckAll = !this.isCheckAll
-            if(this.$route.name == 'choose'){
-                this.message = {
-                    type:'choose',
-                    isCheckAll: this.isCheckAll
-                }
-            }else if(this.$route.name == 'fill'){
-                this.message = {
-                    type:'fill',
-                    isCheckAll: this.isCheckAll
-                }
+            this.info = {
+                type:this.type,
+                subject:'语文',
+                grade:item.classGrade,
+                element:this.hadUnit,
+                using:val,
+                page:1
             }
         },
-        getBackInfo(){
-            this.isCheckAll = false
+        changeType(str){
+            this.type = str
+            this.info = {
+                type:this.type,
+                subject:'语文',
+                grade:this.grade.classGrade,
+                element:this.hadUnit,
+                using:this.ce,
+                page:1
+            }
+        },
+        getClassList(){
+            this.fullscreenLoading = true
+            var teacherId = this.Util.getCookie('u_id')
+            this.axios.get('/homework/CSM/'+teacherId+"/1").then(response => {
+                var resp = response.data
+                this.fullscreenLoading = false
+                if(resp.list.length > 0){
+                    this.list = resp.list
+                    this.grade = resp.list[0]
+                    var info = this.Util.getLocalStorage('g')
+                    if(typeof(info) != 'undefined'){
+                        var g = JSON.parse(this.Base64.decode(info))
+                        this.grade = g.g
+                        this.ce = g.c
+                        this.hadUnit = g.u
+                        this.info = {
+                            type:this.type,
+                            subject:'语文',
+                            grade:g.g.classGrade,
+                            element:g.u,
+                            using:g.c,
+                            page:1
+                        }
+                    }
+                }
+            }).catch(error => {
+                this.fullscreenLoading = false
+                this.$message.error(error)
+            })
         }
     }
 }
@@ -148,6 +187,7 @@ export default {
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
+    padding-bottom: 53px;
     background: url(../list/img/middle_body.png) repeat-y;
 }
 .import>section>.importHeader{
@@ -250,6 +290,7 @@ export default {
     font-size: 17px;
     font-weight: bold;
     cursor: pointer;
+    user-select: none;
 }
 .import>section>.importBody>.importNav>.checkAll{
     width: 83px;
@@ -261,6 +302,7 @@ export default {
 }
 .import>section>.importBody>.importNav>.checkAll>span{
     font-weight: bold;
+    user-select: none;
 }
 .noCheckAll{
     color: #4a7373;
@@ -271,6 +313,7 @@ export default {
 }
 .import>section>.submit{
     width: 100%;
+    height: 40px;
     text-align: center;
     padding-top: 18px;
     position: absolute;

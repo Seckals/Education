@@ -25,16 +25,17 @@
 export default {
     data(){
         return {
-            list:[{title:'',answer:[{name:'',info:'',isTure:false}]}]
+            list:[{title:'',answer:[{name:'',info:'',isTrue:true}]}]
         }
     },
-    props:['isSubmitFillInfo'],
-    watch:{
-        isSubmitFillInfo(){
-            if(this.isSubmitFillInfo){
-                this.$emit("getBackInfo",{'fill':this.list})
-            }
+    mounted(){
+        var info = this.Util.getLocalStorage('f')
+        if(typeof(info) != 'undefined'){
+            this.list = JSON.parse(this.Base64.decode(info))
         }
+    },
+    beforeDestroy(){
+        this.Util.setLocalStorage('f',this.Base64.encode(JSON.stringify(this.list)))
     },
     filters:{
         toUpper(val){
@@ -57,9 +58,9 @@ export default {
                 this.$message.error('已超出删除限制')
             }
         },
-        addItem(){
+        addItem(item){
             if(item.length < 7){
-                var i = {name:'',info:'',isTure:false}
+                var i = {name:'',info:'',isTrue:true}
                 item.push(i)
             }else {
                 this.$message.error('最多添加7个选项')
@@ -67,6 +68,24 @@ export default {
         },
         add(){
             this.list.push({title:'',answer:[]})
+        },
+        detection(){
+            for(var i=0;i<this.list.length;i++){
+                if(this.list[i].title == ''){
+                    return false
+                }else {
+                    if(this.list[i].answer.length == 0){
+                        return false
+                    }else{
+                        for(var j=0;j<this.list[i].answer.length;j++){
+                            if(this.list[i].answer[j].info==''){
+                                return false
+                            }
+                        }
+                    }
+                }
+            }
+            return true
         }
     }
 }

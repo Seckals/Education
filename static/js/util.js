@@ -24,5 +24,11 @@ export default {
     },
     getLocalStorage(key){
         return localStorage[key]
+    },
+    removeLocalStorage(key){
+        localStorage.removeItem(key)
+    },
+    clearLocalStorage(){
+        localStorage.clear()
     }
 }

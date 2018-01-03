@@ -16,10 +16,15 @@ import studentlist from '../components/teacher/list/info/studentList'
 import finish from '../components/teacher/list/info/finishInfo'
 import box from '../components/teacher/publish/publishBox'   // 添加作业
 import publish from '../components/teacher/publish/index'
+import addBox from '../components/teacher/publish/add/addBox'
+import addChoose from '../components/teacher/publish/add/chooseAdd'
+import addFill from '../components/teacher/publish/add/fillAdd'
+import showBox from '../components/teacher/publish/show/showBox'
+import showChoose from '../components/teacher/publish/show/chooseShow'
+import showFill from '../components/teacher/publish/show/fillShow'
+
 import importlibrary from '../components/teacher/library/index'   // 导入题库
 import library from '../components/teacher/library/library'
-import libraryChoose from '../components/teacher/library/show/choose'
-import libraryFill from '../components/teacher/library/show/fill'
 
 // 学生部分
 import student from '../components/student/index'
@@ -102,27 +107,53 @@ export default new Router({
                 children: [
                     {
                         path: 'publish',
-                        component: publish
-                    },
-                    {
-                        path: 'library',
-                        component: library,
+                        component: publish,
                         children: [
                             {
-                                path:'choose',
-                                name:'choose',
-                                component: libraryChoose
+                                path: 'add',
+                                component: addBox,
+                                children: [
+                                    {
+                                        path: 'choose',
+                                        component: addChoose
+                                    },
+                                    {
+                                        path: 'fill',
+                                        component: addFill
+                                    },
+                                    {
+                                        path: '/',
+                                        redirect: 'choose'
+                                    }
+                                ]
                             },
                             {
-                                path: 'fill',
-                                name: 'fill',
-                                component: libraryFill
+                                path: 'show',
+                                component: showBox,
+                                children: [
+                                    {
+                                        path: 'choose',
+                                        component: showChoose
+                                    },
+                                    {
+                                        path: 'fill',
+                                        component: showFill
+                                    },
+                                    {
+                                        path: '/',
+                                        redirect: 'choose'
+                                    }
+                                ]
                             },
                             {
                                 path: '/',
-                                redirect: 'choose'
+                                redirect: 'add'
                             }
                         ]
+                    },
+                    {
+                        path: 'library',
+                        component: library
                     },
                     {
                         path: '/',

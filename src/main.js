@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import qs from 'qs'
 import Util from '../static/js/util.js'
+import Base64 from '../static/js/Base64.js'
 var instance = axios.create({
     baseURL: '/api/'
 })
@@ -16,6 +17,7 @@ Vue.use(ElementUI)
 Vue.prototype.qs = qs
 Vue.prototype.axios = instance
 Vue.prototype.Util = Util
+Vue.prototype.Base64 = Base64
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -43,24 +43,7 @@
                     </div>
                     <div class="cutLine"></div>
                     <div class="publishBody">
-                        <div class="addNav">
-                            <nav>
-                                <div class="navItem" :class="{active:isActive}" @click="changeType('choose')">
-                                    <div class="navIcon cIcon"></div>
-                                    <span>选择题</span>
-                                </div>
-                                <div class="navItem" :class="{active:!isActive}" @click="changeType('fill')">
-                                    <div class="navIcon fIcon"></div>
-                                    <span>填空题</span>
-                                </div>
-                            </nav>
-                            <div class="addInfo">
-                                <addChoose v-show="infoType == 1" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addChoose>
-                                <addFill v-show="infoType == 2" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addFill>
-                                <showChoose v-show="infoType == 3" :chooseInfo="chooseInfo"></showChoose>
-                                <fillChoose v-show="infoType == 4" :fillInfo="fillInfo"></fillChoose>
-                            </div>
-                        </div>
+                        <router-view/>
                     </div>
                 </section>
                 <footer></footer>
@@ -77,12 +60,7 @@
 </template>
 
 <script>
-import addChoose from './add/chooseAdd'
-import addFill from './add/fillAdd'
 import addClass from './add/addClass'
-import showChoose from './show/chooseShow'
-import fillChoose from './show/fillShow'
-
 export default {
     data(){
         return {
@@ -97,18 +75,13 @@ export default {
             hadUnit:'一单元',
             title:'',
             isInputShow:true,
-            isActive:true,
-            infoType:1,          // 1.添加选择题 2.添加填空题 3.查看选择题 4.查看填空题
-            backInfo:false,
-            fillInfo:'',
-            chooseInfo:'',
             isShow:false,        // 预览
             text:'预览',
             isAddClassShow:false,
             submitInfo:{classInfo:'',question:''}
         }
     },
-    components:{addChoose,addFill,showChoose,fillChoose,addClass},
+    components:{addClass},
     mounted(){
         this.fullscreenLoading = true
         var teacherId = this.Util.getCookie('u_id')
@@ -144,49 +117,21 @@ export default {
             if(this.isShow){
                 this.text = '预览'
                 this.isShow = false
-                this.infoType = 1
-                this.isActive = true
-                this.backInfo = false
+                this.$router.push("/teacher/box/publish/add/choose")
             }else{
                 this.text = '返回修改'
                 this.isShow = true
-                this.infoType = 3
-                this.isActive = true
-                this.backInfo = true
-            }
-        },
-        changeType(str){
-            if(this.isShow){
-                if(str == 'choose'){
-                    this.isActive = true
-                    this.infoType = 3
-                }else if(str == 'fill'){
-                    this.isActive = false
-                    this.infoType = 4
-                }
-            }else{
-                if(str == 'choose'){
-                    this.isActive = true
-                    this.infoType = 1
-                }else if(str == 'fill'){
-                    this.isActive = false
-                    this.infoType = 2
-                }
-            }
-        },
-        getBackInfo(msg){
-            console.log(msg)
-            if(msg.hasOwnProperty('choose')){
-                this.chooseInfo = msg['choose']
-                console.log(this.chooseInfo)
-            }else if(msg.hasOwnProperty('fill')){
-                this.fillInfo = msg['fill']
+                this.$router.push("/teacher/box/publish/show/choose")
             }
         },
         toLibrary(){
-            // this.backInfo = true
-            // this.Util.setLocalStorage('info',escape({choose:this.chooseInfo,fill:this.fillInfo}))
-            // this.$router.push({path:'/teacher/box/library',query:{name:'info'}})
+            var info = {
+                g:this.grade,
+                c:this.ce,
+                u:this.hadUnit
+            }
+            this.Util.setLocalStorage('g',this.Base64.encode(JSON.stringify(info)))
+            this.$router.push('/teacher/box/library')
         },
         showList(type){
             this[type] = !this[type]
@@ -443,56 +388,23 @@ export default {
 .publish>.aside>.btnBox>.submit:hover{
     background: #24a6a7
 }
-/**********************************************************  addNav ********************************/
-.addNav{
-    width: 100%;
-}
-.addNav>nav{
-    width: 100%;
-    height: 117px;
-    background: rgba(0,0,0,0.05);
-}
-.addNav>nav>.navItem{
-    width: 150px;
-    height: 100%;
-    display: inline-block;
-    vertical-align: top;
-    cursor: pointer;
-    box-sizing: border-box;
-    padding-top: 17px;
-}
-.addNav>nav>.navItem>.navIcon{
-    width: 50px;
-    height: 51px;
-    margin:0 auto;
-    background: url('./img/add.png') no-repeat;
-}
-.addNav>nav>.navItem>.cIcon{
-    background-position: -50px -51px;
-}
-.addNav>nav>.navItem>.fIcon{
-    background-position: 0 -51px;
-}
-.addNav>nav>.navItem>span{
-    display: block;
-    width: 100%;
-    font-size: 15px;
-    text-align: center;
-    line-height: 35px;
-    color: #3a3b3b;
-    font-weight: 500;
-}
-.addNav>nav>.active{
-    background: #def1e5 !important;
-    border-top: 4px solid #28b3b4;
-}
-.addNav>nav>.active>span{
-    color:#28b3b4 !important;
-}
-.addNav>nav>.active>.navIcon{
-    background-position-y:0 !important;
-}
-.addNav>.addInfo{
-    padding-top: 20px;
-}
 </style>
+
+<!-- <div class="addNav">
+    <nav>
+        <div class="navItem" :class="{active:isActive}" @click="changeType('choose')">
+            <div class="navIcon cIcon"></div>
+            <span>选择题</span>
+        </div>
+        <div class="navItem" :class="{active:!isActive}" @click="changeType('fill')">
+            <div class="navIcon fIcon"></div>
+            <span>填空题</span>
+        </div>
+    </nav>
+    <div class="addInfo">
+        <addChoose v-show="infoType == 1" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addChoose>
+        <addFill v-show="infoType == 2" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addFill>
+        <showChoose v-show="infoType == 3" :chooseInfo="chooseInfo"></showChoose>
+        <fillChoose v-show="infoType == 4" :fillInfo="fillInfo"></fillChoose>
+    </div>
+</div> -->
