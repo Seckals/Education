@@ -25,7 +25,7 @@
 export default {
     data(){
         return {
-            list:[{title:'',answer:[{name:'',info:'',isTrue:true}]}]
+            list:[{id:'',title:'',answer:[{name:'',info:'',isTrue:true}]}]
         }
     },
     mounted(){
@@ -67,7 +67,7 @@ export default {
             }
         },
         add(){
-            this.list.push({title:'',answer:[]})
+            this.list.push({id:'',title:'',answer:[]})
         },
         detection(){
             for(var i=0;i<this.list.length;i++){

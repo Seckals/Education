@@ -37,7 +37,12 @@
                         </li>
                     </ul>
                 </div>
+                <footer class="btns">
+                    <button class="submit" @click="submit">提交</button>
+                    <button class="cancel" @click='close'>取消</button>
+                </footer>
             </section>
+
         </div>
     </div>
 </template>
@@ -48,6 +53,7 @@ export default {
         return {
             range:'',
             active:0,
+            word:['A','B','C','D','E','F','G'],
             classList:[]
         }
     },
@@ -60,6 +66,9 @@ export default {
         }
     },
     methods:{
+        submit(){
+            this.dealSubmitData()
+        },
         toggle(str,info,i){
             if(str == 'grade'){
                 this.active = i
@@ -74,6 +83,134 @@ export default {
         },
         close(){
             this.$emit('close',false)
+        },
+        dealSubmitData(){
+            var cstr = this.Util.getLocalStorage('c')
+            var fstr = this.Util.getLocalStorage('f')
+            var gstr = this.Util.getLocalStorage('g')
+            var tstr = this.Util.getLocalStorage('t')
+            var c,f,g,t,chooseInfo,fillInfo,hacj
+            typeof(cstr) != 'undefined'?c = JSON.parse(this.Base64.decode(cstr)):c=[]
+            typeof(fstr) != 'undefined'?f = JSON.parse(this.Base64.decode(fstr)):f=[]
+            typeof(gstr) != 'undefined'?g = JSON.parse(this.Base64.decode(gstr)):g={}
+            typeof(tstr) != 'undefined'?t = JSON.parse(this.Base64.decode(tstr)):t=''
+            chooseInfo = this.dealChooseList(c,g.c,g.u)
+            fillInfo = this.dealFillList(f,g.c,g.u)
+            hacj = this.dealPublishClass()
+            if(this.range == ''){
+                this.$message.error("请输入完成时间")
+            }else if(hacj.code){
+                var info ={
+                    "subject":'语文',
+        			"grade":g.g.classGrade,
+        			"gradeChar":g.g.gradeChar,
+        			"using":g.c,
+        			"element":g.u,
+        			"jobName":t,
+        			"timeRange":this.range,
+        			"token":this.Util.getLocalStorage('token'),
+                    "minute":JSON.stringify(chooseInfo["minute"].concat(fillInfo["minute"])),
+                    "answer":JSON.stringify(chooseInfo["answer"].concat(fillInfo["answer"])),
+                    "id":JSON.stringify(chooseInfo["id"].concat(fillInfo["id"])),
+                    "type":JSON.stringify(chooseInfo["type"].concat(fillInfo["type"])),
+                    "homework_And_Class_Json":JSON.stringify(hacj.list)
+                }
+                this.fullscreenLoading = true
+                this.axios.post('/account/Login',this.qs.stringify(info)).then(response => {
+                    var res = response.data
+                    this.fullscreenLoading = false
+                    if(res == 40002){
+                        this.$message.warning("请勿重复提交")
+						this.$router.push('/teacher/list')
+					}else if(res == 40001){
+                        this.$message.warning("登录超时")
+						this.$router.push('/lrBox/login')
+					}else if(res == 40000){
+                        this.$message.warning("添加失败")
+						this.$router.push('/teacher/list')
+				    }else if(res == "success"){
+                        this.Util.clearLocalStorage()
+						this.$message.success("添加成功")
+						this.$router.push('/teacher/list')
+					}
+                }).catch(error => {
+                    this.fullscreenLoading = false
+                    this.$message.error(error)
+                })
+            }else{
+                this.$message.error("请选择发布班级及添加开始和截止时间")
+            }
+        },
+        dealPublishClass(){
+            var classList = []
+            for(var i = 0; i < this.info.length; i++){
+                for(var j = 0; j < this.info[i].class.length; j++){
+                    if(this.info[i].class[j].isChoose){
+                        var info={
+                            "classId":this.info[i].class[j].id,
+                            "teacherId":this.Util.getCookie('u_id'),
+                            "gradeChar":this.info[i]['name'],
+                            "classGrade":this.info[i]['id'],
+                            "classChar":this.info[i].class[j].name,
+                            "className":this.info[i].class[j].num
+                        }
+                        if(this.info[i].class[j].time != ''){
+                            info["startTime"] = this.info[i].class[j].time[0]
+                            info["endTime"] = this.info[i].class[j].time[1]
+                        }else{
+                            return {code:false};
+                        }
+                        classList.push(info)
+                    }
+                }
+            }
+            if(classList.length == 0){
+                return {code:false}
+            }else{
+                return {code:true,list:classList}
+            }
+        },
+        dealChooseList(list,ce,unit){
+            var choose = {minute:[],answer:[],id:[],type:[]}
+            for(var i = 0; i < list.length; i++){
+                var titleInfo = {},answerInfo = {},correct = []
+                titleInfo['jobNumber'] = i + 1
+                titleInfo['jobContent'] = list[i].title
+                titleInfo['type'] = 1
+                titleInfo['using'] = ce
+                titleInfo['element'] = unit
+                for(var j = 0; j < list[i].answer.length; j++){
+                    answerInfo[this.word[j]] = list[i].answer[j].info
+                    if(list[i].answer[j].isTrue){
+                        correct.push(this.word[j])
+                    }
+                }
+                titleInfo['correct'] = correct.join(",")
+                choose['minute'].push(titleInfo)
+                choose['answer'].push(answerInfo)
+                choose['id'].push(list[i].id)
+                choose['type'].push(1)
+            }
+            return choose
+        },
+        dealFillList(list,ce,unit){
+            var fill = {minute:[],answer:[],id:[],type:[]}
+            for(var i = 0; i < list.length; i++){
+                var titleInfo = {},answerInfo = {}
+                titleInfo['jobNumber'] = i + 1
+                titleInfo['jobContent'] = list[i].title
+                titleInfo['type'] = 1
+                titleInfo['using'] = ce
+                titleInfo['element'] = unit
+                for(var j = 0; j < list[i].answer.length; j++){
+                    answerInfo[this.word[j]] = list[i].answer[j].info
+                }
+                fill['minute'].push(titleInfo)
+                fill['answer'].push(answerInfo)
+                fill['id'].push(list[i].id)
+                fill['type'].push(1)
+            }
+            return fill
         }
     }
 }
@@ -225,6 +362,36 @@ export default {
 .addClass>.addClassContent>section>.setFinishTime>ul>li>.time{
     box-sizing: border-box;
     padding-top: 10px;
+}
+.addClass>.addClassContent>section>.btns{
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    font-size: 0;
+}
+.addClass>.addClassContent>section>.btns>button{
+    width: 85px;
+    height: 34px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    -webkit-box-shadow: 1px 1px 2px #aabebe;
+    box-shadow: 1px 1px 2px #aabebe;
+    vertical-align: middle;
+}
+.addClass>.addClassContent>section>.btns>.submit{
+    background: #32acab;
+    margin-right: 10px;
+}
+.addClass>.addClassContent>section>.btns>.submit:hover{
+    background: #24a6a7;
+}
+.addClass>.addClassContent>section>.btns>.cancel{
+    background: #8e9491;
+}
+.addClass>.addClassContent>section>.btns>.cancel:hover{
+    background: #828784;
 }
 .addClass>.addClassContent .el-input__inner{
     background: #e8f0ec !important;

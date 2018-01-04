@@ -29,7 +29,7 @@
 export default {
     data(){
         return {
-            list:[{title:'',answer:[{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false}]}]
+            list:[{id:'',title:'',answer:[{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false}]}]
         }
     },
     mounted(){
@@ -74,7 +74,7 @@ export default {
             }
         },
         add(){
-            this.list.push({title:'',answer:[{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false}]})
+            this.list.push({id:'',title:'',answer:[{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false},{name:'',info:'',isTrue:false}]})
         },
         detection(){
             for(var i=0;i<this.list.length;i++){
@@ -137,7 +137,6 @@ export default {
     height: 39px;
     margin-bottom: 17px;
     font-size: 0;
-    user-select:none;
 }
 .chooseAddBox>div>.chooseItem>li>.checkBox{
     display: inline-block;

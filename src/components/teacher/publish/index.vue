@@ -78,40 +78,48 @@ export default {
             isShow:false,        // 预览
             text:'预览',
             isAddClassShow:false,
-            submitInfo:{classInfo:'',question:''}
+            submitInfo:[]
         }
     },
     components:{addClass},
     mounted(){
         this.fullscreenLoading = true
         var teacherId = this.Util.getCookie('u_id')
+        var t = this.Util.getLocalStorage('t')
+        if(typeof(t) != 'undefined'){
+            this.title = this.Base64.decode(t)
+        }
         this.axios.get('/homework/CSM/'+teacherId+"/1").then(response => {
             var resp = response.data
             this.fullscreenLoading = false
             if(resp.list.length > 0){
                 this.list = resp.list
                 this.grade = resp.list[0]
+                var info = {
+                    g:this.grade,
+                    c:this.ce,
+                    u:this.hadUnit
+                }
+                this.Util.setLocalStorage('g',this.Base64.encode(JSON.stringify(info)))
             }
         }).catch(error => {
             this.fullscreenLoading = false
             this.$message.error(error)
         })
+        this.getToken()
     },
     methods:{
         close(msg){
             this.isAddClassShow = false
         },
         submit(){
-            var l = [
-                        {classChar:"三班",classGrade:"3",className:"3",gradeChar:"三年级",id:"8427098693"},
-                        {classChar:"一班",classGrade:"3",className:"1",gradeChar:"三年级",id:"8427098693"},
-                        {classChar:"二班",classGrade:"3",className:"2",gradeChar:"三年级",id:"8427098693"},
-                        {classChar:"三班",classGrade:"4",className:"3",gradeChar:"四年级",id:"8427098693"}
-                    ]
-                    this.classInfo = this.unique(l)
-            // this.submitInfo.classInfo = this.unique(this.list)
-            // this.submitInfo.question = ''
-            this.isAddClassShow = true
+            this.submitInfo = this.unique(this.list)
+            this.$router.go(0)
+            if(this.verify()){
+                this.isAddClassShow = true
+            }else{
+                this.$message.error("请填写完整并选择正确答案")
+            }
         },
         preview(){
             if(this.isShow){
@@ -147,14 +155,27 @@ export default {
             this.grade = item
             this.ce = val
             this.isGradeShow = false
+            var info = {
+                g:this.grade,
+                c:this.ce,
+                u:this.hadUnit
+            }
+            this.Util.setLocalStorage('g',this.Base64.encode(JSON.stringify(info)))
         },
         chooseUnit(val){
             this.hadUnit = val
             this.isUnitShow = false
+            var info = {
+                g:this.grade,
+                c:this.ce,
+                u:this.hadUnit
+            }
+            this.Util.setLocalStorage('g',this.Base64.encode(JSON.stringify(info)))
         },
         inputChangeShow(val){
             if(val == 'editor'){
                 this.isInputShow = false
+                this.Util.setLocalStorage('t',this.Base64.encode(this.title))
             }else if(val == 'input'){
                 this.isInputShow = true
             }
@@ -164,11 +185,12 @@ export default {
             var arr = []
             for(var i = 0; i < array.length; i++){
                 if(n.hasOwnProperty(array[i]['classGrade'])){
-                    n[array[i]['classGrade']]['class'].push({name:array[i]['classChar'],id:array[i]['id'],isChoose:false,time:''})
+                    n[array[i]['classGrade']]['class'].push({name:array[i]['classChar'],id:array[i]['id'],isChoose:false,time:'',num:array[i]['className']})
                 }else{
                     n[array[i]['classGrade']] = {
                         name:array[i]['gradeChar'],
-                        class:[{name:array[i]['classChar'],id:array[i]['id'],isChoose:false,time:''}]
+                        id:array[i]['classGrade'],
+                        class:[{name:array[i]['classChar'],id:array[i]['id'],isChoose:false,time:'',num:array[i]['className']}]
                     }
                 }
             }
@@ -176,6 +198,54 @@ export default {
                 arr.push(n[j])
             }
             return arr;
+        },
+        verify(){
+            var c = this.Util.getLocalStorage('c')
+            var f = this.Util.getLocalStorage('f')
+            var clist,flist
+            typeof(c) != 'undefined' ? clist = JSON.parse(this.Base64.decode(c)) : clist = []
+            typeof(f) != 'undefined' ? flist = JSON.parse(this.Base64.decode(f)) : flist = []
+            if(this.title == ''){
+                this.$message.error("请填写名称")
+                return false
+            }else if(clist.length == 0 && flist.length == 0){
+                this.$message.error("请输入题目")
+                return false
+            }else if(this.verifyItem(clist) && this.verifyItem(flist)) {
+                return true
+            }else{
+                return false
+            }
+        },
+        verifyItem(list){
+            for(var i = 0; i < list.length; i++){
+                if(list[i].title == ''){
+                    return false
+                }else if(list[i].answer.length == 0){
+                    return false
+                }else{
+                    var n = 0;
+                    for(var j = 0; j < list[i].answer.length; j++){
+                        if(list[i].answer[j].info == ''){
+                            return false
+                        }else if(list[i].answer[j].isTrue){
+                            n++
+                        }
+                    }
+                    if(n == 0){
+                        return false
+                    }
+                }
+            }
+            return true
+        },
+        getToken(){
+            this.axios.get('/getToken').then(response => {
+                var resp = response.data
+                this.Util.setLocalStorage('token',this.Base64.encode(resp))
+            }).catch(error => {
+                this.$message.error(error)
+            })
         }
     }
 }
@@ -389,22 +459,3 @@ export default {
     background: #24a6a7
 }
 </style>
-
-<!-- <div class="addNav">
-    <nav>
-        <div class="navItem" :class="{active:isActive}" @click="changeType('choose')">
-            <div class="navIcon cIcon"></div>
-            <span>选择题</span>
-        </div>
-        <div class="navItem" :class="{active:!isActive}" @click="changeType('fill')">
-            <div class="navIcon fIcon"></div>
-            <span>填空题</span>
-        </div>
-    </nav>
-    <div class="addInfo">
-        <addChoose v-show="infoType == 1" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addChoose>
-        <addFill v-show="infoType == 2" :isSubmitInfo='backInfo' @getBackInfo="getBackInfo"></addFill>
-        <showChoose v-show="infoType == 3" :chooseInfo="chooseInfo"></showChoose>
-        <fillChoose v-show="infoType == 4" :fillInfo="fillInfo"></fillChoose>
-    </div>
-</div> -->

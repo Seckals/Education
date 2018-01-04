@@ -42,7 +42,12 @@
  blockquote, q {
  	quotes: none;
  }
-
+ *{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+ }
  blockquote:before, blockquote:after,
  q:before, q:after {
  	content: none;

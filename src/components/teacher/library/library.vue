@@ -38,8 +38,8 @@
                     <div class="importNavItem" :class="{'router-link-active':type=='f'}" @click="changeType('f')">填空题</div>
                 </div>
                 <div class="importContent">
-                    <choose :sendInfo='info' v-show="type=='c'"></choose>
-                    <fill :sendInfo='info' v-show="type=='f'"></fill>
+                    <choose v-model='chooselist' v-show="type=='c'"></choose>
+                    <fill v-model='filllist' v-show="type=='f'"></fill>
                 </div>
             </div>
             <div class="submit">
@@ -66,8 +66,9 @@ export default {
             hadUnit:'一单元',
             grade:{},
             ce:'上',
-            info:'',
-            type:'c'
+            type:'c',
+            chooselist:[],
+            filllist:[]
         }
     },
     components:{choose,fill},
@@ -76,19 +77,13 @@ export default {
     },
     methods:{
         submit(){
-            var bcstr = this.Util.getLocalStorage('bc')
-            var bfstr = this.Util.getLocalStorage('bf')
-            var cstr = this.Util.getLocalStorage('bc')
-            var fstr = this.Util.getLocalStorage('bf')
-            var bc,bf,c,f
-            typeof(bcstr) != 'undefined'?bc = JSON.parse(this.Base64.decode(bcstr)):bc=[]
-            typeof(bfstr) != 'undefined'?bf = JSON.parse(this.Base64.decode(bfstr)):bf=[]
+            var cstr = this.Util.getLocalStorage('c')
+            var fstr = this.Util.getLocalStorage('f')
+            var c,f
             typeof(cstr) != 'undefined'?c = JSON.parse(this.Base64.decode(cstr)):c=[]
             typeof(fstr) != 'undefined'?f = JSON.parse(this.Base64.decode(fstr)):f=[]
-            this.Util.setLocalStorage('c',this.Base64.encode(JSON.stringify(bc.concat(c))))
-            this.Util.setLocalStorage('f',this.Base64.encode(JSON.stringify(bf.concat(f))))
-            this.Util.removeLocalStorage(bc)
-            this.Util.removeLocalStorage(bf)
+            this.Util.setLocalStorage('c',this.Base64.encode(JSON.stringify(c.concat(this.filterList(this.chooselist)))))
+            this.Util.setLocalStorage('f',this.Base64.encode(JSON.stringify(f.concat(this.filterList(this.filllist)))))
             this.$router.push('/teacher/box/publish/add')
         },
         isblur(){
@@ -104,45 +99,22 @@ export default {
         chooseUnit(val){
             this.hadUnit = val
             this.isUnitShow = false
-            this.info = {
-                type:this.type,
-                subject:'语文',
-                grade:this.grade.classGrade,
-                element:val,
-                using:this.ce,
-                page:1
-            }
+            this.getQuestionList(1)
         },
         hadChoose(item,val){
             this.grade = item
             this.ce = val
             this.isGradeShow = false
-            this.info = {
-                type:this.type,
-                subject:'语文',
-                grade:item.classGrade,
-                element:this.hadUnit,
-                using:val,
-                page:1
-            }
+            this.getQuestionList(1)
         },
         changeType(str){
             this.type = str
-            this.info = {
-                type:this.type,
-                subject:'语文',
-                grade:this.grade.classGrade,
-                element:this.hadUnit,
-                using:this.ce,
-                page:1
-            }
         },
         getClassList(){
             this.fullscreenLoading = true
             var teacherId = this.Util.getCookie('u_id')
             this.axios.get('/homework/CSM/'+teacherId+"/1").then(response => {
                 var resp = response.data
-                this.fullscreenLoading = false
                 if(resp.list.length > 0){
                     this.list = resp.list
                     this.grade = resp.list[0]
@@ -161,11 +133,81 @@ export default {
                             page:1
                         }
                     }
+                    this.getQuestionList(1)
+                }else{
+                    this.fullscreenLoading = false
                 }
             }).catch(error => {
                 this.fullscreenLoading = false
                 this.$message.error(error)
             })
+        },
+        getQuestionList(page){
+            this.fullscreenLoading = true
+            var info = {
+                subject:'语文',
+                grade:this.grade.classGrade,
+                element:this.hadUnit,
+                using:this.ce,
+                page:page
+            }
+            this.axios.post('/question/findAllMinute',this.qs.stringify(info)).then(response => {
+                var resp = response.data
+                this.fullscreenLoading = false
+                if(resp.minute){
+                    this.dealData(resp.minute)
+                }
+            }).catch(error => {
+                this.fullscreenLoading = false
+                this.$message.error(error)
+            })
+        },
+        dealData(list){
+            for(var i = 0; i < list.length; i++){
+                if(list[i].type == 2){
+                    list[i]['isChoose'] = false
+                    this.filllist.push(list[i])
+                }else if(list[i].type == 1){
+                    list[i]['isChoose'] = false
+                    this.chooselist.push(list[i])
+                }
+            }
+        },
+        filterList(list){
+            var newlist = []
+            for(var i = 0; i < list.length; i++){
+                if(list[i].isChoose){
+                    var info = {
+                        title:list[i].jobContent,
+                        answer:[],
+                        id:list[i].id
+                    }
+                    info['answer'] = this.dealAnswer(list[i].question_Pool_Answer,list[i].correct,list[i].type)
+                    newlist.push(info)
+                }
+            }
+            return newlist
+        },
+        dealAnswer(list,str,type){
+            var newlist = []
+            for(var i in list){
+                if(i != 'id' && i != 'jobNumber' && i != 'pid'){
+                    var reg = new RegExp(i.toUpperCase(),'gi');
+                    var info = {
+                        info:list[i],
+                        name:i.toUpperCase()
+                    }
+                    if(type == 2){
+                        info['isTrue'] = true
+                    }else if(reg.test(str)){
+                        info['isTrue'] = true
+                    }else{
+                        info['isTrue'] = false
+                    }
+                    newlist.push(info)
+                }
+            }
+            return newlist
         }
     }
 }
@@ -290,7 +332,6 @@ export default {
     font-size: 17px;
     font-weight: bold;
     cursor: pointer;
-    user-select: none;
 }
 .import>section>.importBody>.importNav>.checkAll{
     width: 83px;
@@ -302,7 +343,6 @@ export default {
 }
 .import>section>.importBody>.importNav>.checkAll>span{
     font-weight: bold;
-    user-select: none;
 }
 .noCheckAll{
     color: #4a7373;
