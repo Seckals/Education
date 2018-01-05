@@ -248,11 +248,13 @@ export default {
 }
 .list>section>.listBox{
     width: 890px;
-    height: 100px;
     margin:0 auto;
 }
 .list>section>.listBox>li{
     box-sizing: border-box;
+}
+.list>section>.listBox>li>img{
+    width: 890px;
 }
 .list>section>.listBox>li>.time{
     width: 100%;

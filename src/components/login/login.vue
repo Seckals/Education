@@ -38,8 +38,23 @@ export default {
         fullscreenLoading:false
     }
   },
+  mounted(){
+      document.body.addEventListener('keyup', this.login, false)
+  },
   methods: {
+      login(e){
+          if(e.keyCode == 13){
+              this.submit()
+          }
+      },
       submit(){
+          if(this.username == '' || this.password == ''){
+              this.$message.error("请输入用户名或密码")
+          }else{
+              this.send()
+          }
+      },
+      send(){
           this.fullscreenLoading = true
           this.axios.post('/account/Login',this.qs.stringify({'username':this.username,'password':this.password})).then(response => {
               var res = response.data
@@ -72,15 +87,24 @@ export default {
               this.$message.error(error)
           })
       }
+  },
+  beforeDestroy() {
+    document.body.removeEventListener('keyup', this.login)
   }
 }
 </script>
 
 <style>
+#login{
+    width: 100%;
+    height: 100%;
+    padding-top: 97px;
+    box-sizing: border-box;
+}
 #login>.content{
     width: 410px;
     height: 470px;
-    margin: 97px auto 0;
+    margin: 0 auto;
     position: relative;
     text-align: center;
 }

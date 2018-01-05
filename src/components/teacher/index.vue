@@ -43,7 +43,7 @@
                     <img src="./img/line_left.png" alt="">
                 </li>
                 <li>
-                    <router-link to="/teacher/list" class="homework"><span></span></router-link>
+                    <router-link to="/teacher/show" class="homework"><span></span></router-link>
                 </li>
                 <li><img src="./img/line_left.png" alt=""></li>
                 <li>

@@ -114,7 +114,6 @@ export default {
         },
         submit(){
             this.submitInfo = this.unique(this.list)
-            this.$router.go(0)
             if(this.verify()){
                 this.isAddClassShow = true
             }else{

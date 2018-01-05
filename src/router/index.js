@@ -10,7 +10,8 @@ import registerClass from '../components/login/register/registerClass'
 import registerTeacher from '../components/login/register/registerTeacher'
 // 教师部分
 import teacher from '../components/teacher/index'
-import list from '../components/teacher/list/list'  // 作业列表
+import listBox from '../components/teacher/list/listBox'  // 作业列表
+import list from '../components/teacher/list/list'
 import info from '../components/teacher/list/info'
 import studentlist from '../components/teacher/list/info/studentList'
 import finish from '../components/teacher/list/info/finishInfo'
@@ -80,24 +81,34 @@ export default new Router({
         component: teacher,
         children:[
             {
-                path: 'list',
-                component: list
-            },
-            {
-                path: 'info',
-                component: info,
+                path: 'show',
+                component: listBox,
                 children: [
                     {
-                        path: 'studentlist',
-                        component: studentlist
+                        path: 'list',
+                        component: list
                     },
                     {
-                        path: 'finish',
-                        component: finish
+                        path: 'info',
+                        component: info,
+                        children: [
+                            {
+                                path: 'studentlist',
+                                component: studentlist
+                            },
+                            {
+                                path: 'finish',
+                                component: finish
+                            },
+                            {
+                                path: '/',
+                                redirect: 'studentlist'
+                            }
+                        ]
                     },
                     {
                         path: '/',
-                        redirect: 'studentlist'
+                        redirect: 'list'
                     }
                 ]
             },
@@ -167,7 +178,7 @@ export default new Router({
             },
             {
                 path:'/',
-                redirect: 'list'
+                redirect: 'show'
             }
         ]
     },

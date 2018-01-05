@@ -116,22 +116,22 @@ export default {
                     "homework_And_Class_Json":JSON.stringify(hacj.list)
                 }
                 this.fullscreenLoading = true
-                this.axios.post('/account/Login',this.qs.stringify(info)).then(response => {
+                this.axios.post('/homework/teachersaveoptionjob',this.qs.stringify(info)).then(response => {
                     var res = response.data
                     this.fullscreenLoading = false
                     if(res == 40002){
                         this.$message.warning("请勿重复提交")
-						this.$router.push('/teacher/list')
+						this.$router.push('/teacher/show')
 					}else if(res == 40001){
                         this.$message.warning("登录超时")
 						this.$router.push('/lrBox/login')
 					}else if(res == 40000){
                         this.$message.warning("添加失败")
-						this.$router.push('/teacher/list')
+						this.$router.push('/teacher/show')
 				    }else if(res == "success"){
-                        this.Util.clearLocalStorage()
+                        localStorage.clear()
 						this.$message.success("添加成功")
-						this.$router.push('/teacher/list')
+						this.$router.push('/teacher/show')
 					}
                 }).catch(error => {
                     this.fullscreenLoading = false
@@ -199,7 +199,7 @@ export default {
                 var titleInfo = {},answerInfo = {}
                 titleInfo['jobNumber'] = i + 1
                 titleInfo['jobContent'] = list[i].title
-                titleInfo['type'] = 1
+                titleInfo['type'] = 2
                 titleInfo['using'] = ce
                 titleInfo['element'] = unit
                 for(var j = 0; j < list[i].answer.length; j++){
@@ -208,7 +208,7 @@ export default {
                 fill['minute'].push(titleInfo)
                 fill['answer'].push(answerInfo)
                 fill['id'].push(list[i].id)
-                fill['type'].push(1)
+                fill['type'].push(2)
             }
             return fill
         }
@@ -363,13 +363,13 @@ export default {
     box-sizing: border-box;
     padding-top: 10px;
 }
-.addClass>.addClassContent>section>.btns{
+.addClass>.addClassContent>section>footer{
     width: 100%;
     height: 40px;
     text-align: center;
     font-size: 0;
 }
-.addClass>.addClassContent>section>.btns>button{
+.addClass>.addClassContent>section>footer>button{
     width: 85px;
     height: 34px;
     border-radius: 10px;
@@ -380,17 +380,17 @@ export default {
     box-shadow: 1px 1px 2px #aabebe;
     vertical-align: middle;
 }
-.addClass>.addClassContent>section>.btns>.submit{
+.addClass>.addClassContent>section>footer>.submit{
     background: #32acab;
     margin-right: 10px;
 }
-.addClass>.addClassContent>section>.btns>.submit:hover{
+.addClass>.addClassContent>section>footer>.submit:hover{
     background: #24a6a7;
 }
-.addClass>.addClassContent>section>.btns>.cancel{
+.addClass>.addClassContent>section>footer>.cancel{
     background: #8e9491;
 }
-.addClass>.addClassContent>section>.btns>.cancel:hover{
+.addClass>.addClassContent>section>footer>.cancel:hover{
     background: #828784;
 }
 .addClass>.addClassContent .el-input__inner{
